@@ -1,0 +1,5 @@
+pytest>=9.0
+jsonschema>=4.18
+anthropic>=0.34.0
+openai>=1.40.0
+elevenlabs>=1.9.0

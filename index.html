@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXA — Africa Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-leaf leaf-tl"></div>
+  <div class="login-leaf leaf-br"></div>
+
+  <div class="login-orb">
+    <div class="login-orb-swirl"></div>
+    <div class="login-orb-swirl swirl-2"></div>
+    <div class="login-orb-highlight"></div>
+    <div class="login-orb-highlight highlight-2"></div>
+  </div>
+  <div class="login-title">Welcome back, <span id="loginName">Bill</span>.</div>
+  <div class="login-sub">NEXA is present and ready.</div>
+  <div class="login-enter glass-card-hover" id="loginEnter">Enter NEXA</div>
+</div>
+
+<div id="app">
+
+  <header>
+    <div class="logo">
+      <h1><span class="text-gradient">NEXA</span></h1>
+      <p>AFRICA OPERATING SYSTEM</p>
+    </div>
+    <div class="header-right">
+      <div class="search-btn glass-card-hover">Search</div>
+      <div class="time" id="clock">09:42</div>
+      <div class="profile glass-card-hover">Bill</div>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <aside class="sidebar">
+      <div class="glass-card wood-accent">
+        <div class="skills-section">
+          <h3>Builtin Skills</h3>
+          <div class="skill-list">
+            <span class="skill-chip">Agriculture Advisor</span>
+            <span class="skill-chip">Construction Advisor</span>
+            <span class="skill-chip">Education Advisor</span>
+            <span class="skill-chip">Electrical Advisor</span>
+            <span class="skill-chip">Entrepreneurship Advisor</span>
+            <span class="skill-chip">Workforce Advisor</span>
+            <span class="skill-chip">Livestock Advisor</span>
+            <span class="skill-chip">Solar Advisor</span>
+            <span class="skill-chip">Water Systems Advisor</span>
+            <span class="skill-chip">Knowledge Remember</span>
+            <span class="skill-chip">Knowledge Recall</span>
+            <span class="skill-chip">Accessibility</span>
+          </div>
+        </div>
+        <div class="skills-section privileged">
+          <h3>Privileged Skills</h3>
+          <div class="skill-list">
+            <span class="skill-chip privileged-chip">AI Reasoning</span>
+            <span class="skill-chip privileged-chip">Image Generation</span>
+            <span class="skill-chip privileged-chip">Voice Generation</span>
+            <span class="skill-chip privileged-chip">System Shutdown</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+
+      <div class="orb-row">
+        <div class="orb-container">
+          <div class="jarvis-orb" id="jarvisOrb">
+            <div class="orb-rings">
+              <div class="orb-ring ring-1"></div>
+              <div class="orb-ring ring-2"></div>
+              <div class="orb-ring ring-3"></div>
+            </div>
+            <div class="orb-core"></div>
+          </div>
+          <div class="orb-state-label" id="orbStateLabel">Idle</div>
+          <div class="orb-hint" id="orbHint">Mint pulse — Jarvis is present, listening for nothing in particular.</div>
+        </div>
+
+        <div class="intelligence-card glass-card wood-accent">
+          <h2>Today's Focus</h2>
+          <div class="focus-item">
+            <span class="focus-dot dot-emerald"></span>
+            <div>
+              <div class="focus-title">Provider abstraction complete</div>
+              <div class="focus-sub">Reasoning, image, and voice each route through a real interface, not a hardcoded vendor.</div>
+            </div>
+          </div>
+          <div class="focus-item">
+            <span class="focus-dot dot-cyan"></span>
+            <div>
+              <div class="focus-title">Full builtin skills catalog</div>
+              <div class="focus-sub">12 builtin skills covering the canonical catalog, all permission-gated.</div>
+            </div>
+          </div>
+          <div class="focus-item">
+            <span class="focus-dot dot-gold"></span>
+            <div>
+              <div class="focus-title">Funded-tier roadmap defined</div>
+              <div class="focus-sub">Local model training is a separate, deliberate future phase — not claimed as done.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card wood-accent">
+        <h2 class="pipeline-title">Execution Pipeline</h2>
+        <div class="pipeline" id="pipeline">
+          <div class="pipeline-stage" data-stage="0"><span>Decision</span><div class="stage-dot"></div></div>
+          <div class="pipeline-arrow">&#8594;</div>
+          <div class="pipeline-stage" data-stage="1"><span>Planner</span><div class="stage-dot"></div></div>
+          <div class="pipeline-arrow">&#8594;</div>
+          <div class="pipeline-stage" data-stage="2"><span>Orchestrator</span><div class="stage-dot"></div></div>
+          <div class="pipeline-arrow">&#8594;</div>
+          <div class="pipeline-stage" data-stage="3"><span>Dispatcher</span><div class="stage-dot"></div></div>
+          <div class="pipeline-arrow">&#8594;</div>
+          <div class="pipeline-stage" data-stage="4"><span>Authorization</span><div class="stage-dot"></div></div>
+          <div class="pipeline-arrow">&#8594;</div>
+          <div class="pipeline-stage" data-stage="5"><span>Executor</span><div class="stage-dot"></div></div>
+        </div>
+      </div>
+
+      <div class="glass-card wood-accent">
+        <div class="status-header">
+          <h2 class="status-title">System Status</h2>
+          <span class="status-pass">364 / 364 PASS</span>
+        </div>
+        <div class="status-grid">
+          <div class="status-item"><span class="status-dot green"></span>Cognition</div>
+          <div class="status-item"><span class="status-dot green"></span>Memory</div>
+          <div class="status-item"><span class="status-dot green"></span>Knowledge</div>
+          <div class="status-item"><span class="status-dot green"></span>Execution</div>
+          <div class="status-item"><span class="status-dot green"></span>Governance</div>
+          <div class="status-item"><span class="status-dot green"></span>Identity</div>
+          <div class="status-item"><span class="status-dot green"></span>Perception</div>
+        </div>
+        <div class="status-footer">Architecture: Phase 2 &middot; Tests: 364/364 PASS</div>
+      </div>
+
+    </main>
+
+    <aside class="right-panel">
+      <div class="glass-card wood-accent">
+        <h3>AI Providers</h3>
+        <div class="provider-list">
+          <div class="provider-item">
+            <span><span class="provider-dot live"></span>Anthropic</span>
+            <span class="provider-status connected">Connected</span>
+          </div>
+          <div class="provider-item">
+            <span><span class="provider-dot live"></span>OpenAI</span>
+            <span class="provider-status connected">Connected</span>
+          </div>
+          <div class="provider-item">
+            <span><span class="provider-dot live"></span>ElevenLabs</span>
+            <span class="provider-status connected">Connected</span>
+          </div>
+          <div class="provider-item">
+            <span><span class="provider-dot reserved"></span>NEXA Local</span>
+            <span class="provider-status reserved">Reserved</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card wood-accent">
+        <h3>Memory &amp; Knowledge</h3>
+        <div class="memory-list">
+          <div class="memory-item">Session Memory</div>
+          <div class="memory-item">Durable Facts</div>
+          <div class="memory-item">Conversation Context</div>
+        </div>
+      </div>
+
+      <div class="plant-accent" aria-hidden="true"></div>
+    </aside>
+
+  </div>
+
+  <footer>
+    <div class="footer-divider"></div>
+    <div class="footer-content">
+      <div class="footer-tagline">Built in Africa. Designed for the Future.</div>
+    </div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

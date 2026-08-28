@@ -1,0 +1,379 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nexa.local/schema/usl-representation-v1.json",
+  "title": "NEXA USL Semantic Representation",
+  "description": "Canonical machine-readable representation of meaning produced by the Universal Semantic Layer.",
+  "type": "object",
+  "additionalProperties": false,
+
+  "required": [
+    "schema_version",
+    "request_id",
+    "semantic_intent",
+    "actors",
+    "entities",
+    "actions",
+    "constraints",
+    "context",
+    "uncertainty"
+  ],
+
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+
+    "semantic_intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "confidence",
+        "provenance"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "request_information",
+            "request_action",
+            "provide_information",
+            "ask_question",
+            "express_preference",
+            "report_event",
+            "issue_command",
+            "unknown"
+          ]
+        },
+
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+
+    "actors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/actor"
+      }
+    },
+
+    "entities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entity"
+      }
+    },
+
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/constraint"
+      }
+    },
+
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+
+    "uncertainty": {
+      "$ref": "#/$defs/uncertainty"
+    }
+  },
+
+  "$defs": {
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "explicit",
+        "inferred",
+        "contextual",
+        "system_derived",
+        "unknown"
+      ]
+    },
+
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "actor_id",
+        "actor_type",
+        "confidence",
+        "provenance"
+      ],
+
+      "properties": {
+        "actor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "actor_type": {
+          "type": "string",
+          "enum": [
+            "user",
+            "nexa",
+            "person",
+            "organization",
+            "system",
+            "unknown"
+          ]
+        },
+
+        "label": {
+          "type": "string"
+        },
+
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_id",
+        "entity_type",
+        "confidence",
+        "provenance"
+      ],
+
+      "properties": {
+        "entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "entity_type": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "label": {
+          "type": "string"
+        },
+
+        "attributes": {
+          "type": "object"
+        },
+
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "action_type",
+        "confidence",
+        "provenance"
+      ],
+
+      "properties": {
+        "action_id": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "action_type": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "actor": {
+          "type": "string"
+        },
+
+        "target": {
+          "type": "string"
+        },
+
+        "parameters": {
+          "type": "object"
+        },
+
+        "temporal_information": {
+          "type": "object"
+        },
+
+        "spatial_information": {
+          "type": "object"
+        },
+
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "constraint_type",
+        "value",
+        "provenance"
+      ],
+
+      "properties": {
+        "constraint_type": {
+          "type": "string",
+          "enum": [
+            "time",
+            "location",
+            "quantity",
+            "preference",
+            "accessibility",
+            "required_output",
+            "exclusion",
+            "other"
+          ]
+        },
+
+        "value": {},
+
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "conversation_references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "previous_statements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "temporal": {
+          "type": "object"
+        },
+
+        "spatial": {
+          "type": "object"
+        },
+
+        "communication": {
+          "type": "object"
+        },
+
+        "user_provided": {
+          "type": "object"
+        }
+      }
+    },
+
+    "uncertainty": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "required": [
+        "overall_confidence",
+        "ambiguous_fields",
+        "unresolved_references",
+        "alternative_interpretations",
+        "missing_information"
+      ],
+
+      "properties": {
+        "overall_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+
+        "ambiguous_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "unresolved_references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+
+        "alternative_interpretations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+
+        "missing_information": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

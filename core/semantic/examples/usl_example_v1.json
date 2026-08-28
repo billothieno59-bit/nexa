@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "request_id": "example-usl-001",
+
+  "semantic_intent": {
+    "type": "request_action",
+    "confidence": 0.99,
+    "provenance": "explicit"
+  },
+
+  "actors": [
+    {
+      "actor_id": "actor_user",
+      "actor_type": "user",
+      "label": "user",
+      "confidence": 1.0,
+      "provenance": "explicit"
+    }
+  ],
+
+  "entities": [
+    {
+      "entity_id": "entity_john",
+      "entity_type": "person",
+      "label": "John",
+      "confidence": 1.0,
+      "provenance": "explicit"
+    }
+  ],
+
+  "actions": [
+    {
+      "action_id": "action_call_john",
+      "action_type": "call",
+      "actor": "actor_user",
+      "target": "entity_john",
+      "parameters": {},
+      "temporal_information": {
+        "relative_time": "tomorrow"
+      },
+      "spatial_information": {},
+      "confidence": 0.98,
+      "provenance": "explicit"
+    }
+  ],
+
+  "constraints": [
+    {
+      "constraint_type": "time",
+      "value": {
+        "expression": "tomorrow"
+      },
+      "provenance": "explicit"
+    }
+  ],
+
+  "context": {
+    "conversation_references": [],
+    "previous_statements": [],
+    "temporal": {},
+    "spatial": {},
+    "communication": {
+      "modality": "text"
+    },
+    "user_provided": {
+      "original_communication": "Please remind me tomorrow to call John."
+    }
+  },
+
+  "uncertainty": {
+    "overall_confidence": 0.97,
+    "ambiguous_fields": [],
+    "unresolved_references": [],
+    "alternative_interpretations": [],
+    "missing_information": []
+  }
+}

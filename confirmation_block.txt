@@ -1,0 +1,15 @@
+﻿if decision.decision_type == "confirmation_required":
+    return ExecutionPlan(
+        status="awaiting_confirmation",
+        intent=decision.intent,
+        requires_confirmation=True,
+        steps=(
+            PlanStep(
+                action="await_confirmation",
+                parameters={
+                    "intent": decision.intent,
+                },
+            ),
+        ),
+        reason=decision.reason,
+    )
