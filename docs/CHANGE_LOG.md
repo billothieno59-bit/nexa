@@ -7,6 +7,90 @@ files, verified against the actual file contents at time of writing.
 
 ---
 
+## 2026-08-29 — Voice generation integration test fix (CONFIRMED)
+
+**What changed:** `skills/privileged/tests/test_voice_generation_integration.py`
+had a monkeypatch scoping bug: it patched
+`core.generation.providers.voice_router.get_voice_provider` (where the
+function is defined), but `skills/privileged/voice_generation.py`
+imports it via `from ... import get_voice_provider` (line 18), which
+binds a separate reference into `voice_generation.py`'s own namespace.
+Patching the origin never touched the copy the skill actually calls,
+so the real `ElevenLabsVoiceProvider` ran unpatched, found no API key,
+and returned `"not_configured"` instead of the test's faked `"ok"`.
+Fixed by changing the patch target to
+`skills.privileged.voice_generation.get_voice_provider` — the one line
+the test needed, no production code changed.
+
+**Files touched:**
+- `skills/privileged/tests/test_voice_generation_integration.py` (modified, 1 line)
+
+**Verified:** `python -m pytest skills\privileged\tests\test_voice_generation_integration.py -v`
+— 4 passed (up from 1 failed / 3 passed). Full suite:
+`python -m pytest` — 385 passed, 0 failed, 3.56s.
+
+**Note:** this test file, `voice_generation.py`'s current form,
+`core/interface/api/`, `web/`, `core/semantic/parser/`, and the rate
+limiter did not originate in this conversation — first seen when
+reading the repo to diagnose this failure.
+
+---
+
+## 2026-08-28 — Perception interpretation providers + ResourceTransactionHandler (CONFIRMED)
+
+**What changed:** Added `TranscriptionProvider` and
+`VisionUnderstandingProvider` interfaces to
+`core/cognition/providers/base.py`. Real implementations:
+`OpenAITranscriptionProvider` (Whisper API), `AnthropicVisionProvider`
+(Claude vision). Reserved/not-yet-implemented local fallbacks:
+`NexaLocalTranscriptionProvider`, `NexaLocalVisionProvider` — both
+return `"not_implemented"` honestly rather than fabricating output.
+Each pair has its own router (`transcription_router.py`,
+`vision_router.py`) following the same pattern as the existing
+`ReasoningProvider` router.
+
+Also gave `ResourceTransactionHandler`
+(`core/execution/executor/action_handlers.py`) a real implementation,
+replacing the no-op placeholder. Explicitly documented assumption: no
+formal product spec for "resource transaction" existed, so it's
+treated as a signed delta against a named, per-subject running
+balance stored via the existing `FactStore` (predicate
+`resource_balance:<resource_name>`). Fails closed on malformed input
+and on any transaction that would take a balance below zero.
+
+**Files touched:**
+- `core/cognition/providers/base.py` (modified)
+- `core/cognition/providers/openai_transcription_provider.py` (new)
+- `core/cognition/providers/local_transcription_provider.py` (new)
+- `core/cognition/providers/transcription_router.py` (new)
+- `core/cognition/providers/anthropic_vision_provider.py` (new)
+- `core/cognition/providers/local_vision_provider.py` (new)
+- `core/cognition/providers/vision_router.py` (new)
+- `core/cognition/providers/tests/test_openai_transcription_provider.py` (new)
+- `core/cognition/providers/tests/test_local_transcription_provider.py` (new)
+- `core/cognition/providers/tests/test_transcription_router.py` (new)
+- `core/cognition/providers/tests/test_anthropic_vision_provider.py` (new)
+- `core/cognition/providers/tests/test_local_vision_provider.py` (new)
+- `core/cognition/providers/tests/test_vision_router.py` (new)
+- `core/execution/executor/action_handlers.py` (modified)
+- `core/execution/executor/tests/test_action_handlers.py` (modified)
+- `docs/roadmap/ROADMAP.md` (modified — Phase 4 items marked done)
+
+**Verified:** `ruff check . --fix` — all checks passed (after fixing
+7 line-length errors in `test_action_handlers.py` in a follow-up
+pass). `python -m pytest` — 342 passed at initial check of this batch
+alone; confirmed together with the fix above at 385 passed, 0 failed,
+in the same repo state.
+
+**Not done:** `core/events/` (message bus, Phase 5) and multimodal
+identity/voice-command work were deliberately not attempted — the
+former has no contract file yet (this codebase's own pattern requires
+contracts before implementation for new canonical layers), the latter
+is explicitly gated in `docs/roadmap/FUTURE_multimodal_identity.md`
+pending decisions not yet made.
+
+---
+
 ## 2026-08-27 — Removed leftover Vite/React/Tailwind tooling
 
 **What changed:** `src/` (the old React version) had already been
@@ -97,37 +181,4 @@ design direction.
 
 **What changed:** Replaced the prior dark-violet/neon-cyan color
 scheme with a tropical palette per design direction: Deep Ocean
-`#07131F`, Palm Emerald `#0F2A25`, Tropical Mint `#22D3A6`, Sunset
-Gold `#C68A2B`, Walnut `#8B5E3C`, Ivory `#F5F7F4`.
-
-- `--violet` repurposed to Walnut (`#8B5E3C`) rather than removed —
-  still used for the orb's "Thinking" state.
-- `--cyan` set equal to Tropical Mint (`#22D3A6`), since the palette
-  has no distinct cyan — gradients that previously blended emerald+cyan
-  now render as a single mint tone.
-- Background radial gradient's dark accent changed from `#17204a`
-  (navy-purple) to `#0F2A25` (Palm Emerald).
-- Orb's four states (Idle/Listening/Thinking/Speaking) recolored to
-  match — Thinking now uses Walnut instead of the prior violet.
-
-**Not changed:** typography (still Space Grotesk / Inter / JetBrains
-Mono — no font swap was made), and the header's "Admin" chip (still
-reads "Admin", not renamed).
-
-**Files touched:**
-- `style.css` (`:root` color tokens, background gradient, orb-related
-  colors)
-- `script.js` (`orbStates` array hex values)
-
-**Verified:** 308/308 tests passed after this change (CSS/JS-only,
-no Python touched).
-
----
-
-## Earlier history (before this log started)
-
-Everything before 2026-08-27 predates this file and is tracked only
-in git history: the governed execution pipeline, the Universal
-Layers, the full builtin + privileged skills catalog, the provider
-abstractions, and the original React (`src/`) frontend that was later
-replaced by the plain HTML/CSS/JS version at project root.
+`#07131F`,
