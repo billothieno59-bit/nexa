@@ -21,7 +21,11 @@ execution pipeline (Decision -> Planner -> Orchestrator -> Dispatcher ->
 Authorization -> Executor), skills economy with enforced authorization
 (SkillRegistry -> SkillAuthorizationGate -> trust_bridge -> TrustSession
 -> execution_bridge), logging, config validation, emergency shutdown
-with real cryptographic key verification.
+with real cryptographic key verification. execution_bridge.invoke_skill()
+also enforces a per-caller TokenBucketRateLimiter before authorization —
+this existed as a standalone class but was never wired to anything until
+its NameError bug (missing bucket lookup in allow_request()) was fixed
+and it was connected as the single enforcement point for all skill calls.
 
 ## Phase 2 — Complete builtin skills catalog (DONE)
 
@@ -38,6 +42,11 @@ data with explicit professional-consultation disclaimers — never
 fabricated technical instructions, since bad guidance in these domains
 can cause real harm.
 
+knowledge.recall_fact also exposes FactStore.get_related() (cycle-safe
+breadth-first relationship walk) via an optional max_depth parameter,
+so relationship queries go through the same governed, authorized path
+as flat fact lookups.
+
 ## Phase 3 — NEXA's own AI (IN PROGRESS)
 
 Three provider abstractions now exist so vendor dependencies can be
@@ -49,6 +58,17 @@ replaced without rewriting any skill:
   real; NexaLocalImageProvider reserved, returns not_implemented) and
   VoiceGenerationProvider (ElevenLabsVoiceProvider real;
   NexaLocalVoiceProvider reserved, returns not_implemented)
+- core/cognition/providers/ — TranscriptionProvider
+  (OpenAITranscriptionProvider real via Whisper; NexaLocalTranscriptionProvider
+  reserved) and VisionUnderstandingProvider (AnthropicVisionProvider real;
+  NexaLocalVisionProvider reserved)
+
+generation.voice (VOICE.GENERATE, founder-only) is proven working through
+the FULL real governed pipeline end to end — rate limit -> trust session
+resolution -> CONSTITUTIONAL_FOUNDER role match -> authorization ->
+ElevenLabsVoiceProvider — not just tested in isolation via
+SkillAuthorizationGate. See skills/privileged/tests/test_voice_generation_integration.py.
+Only the outbound network call is faked in tests.
 
 Next steps when funded: replace the "not_implemented" local providers
 with real trained models. See docs/roadmap/FUNDING_TIER.md for what
@@ -58,79 +78,42 @@ already working.
 ## Phase 4 — Remaining architectural gaps
 
 - ~~Wire skills/registry/execution_bridge.py's invoke_skill() into the
-  main governed pipeline~~ — CONFIRMED sufficient. Traced
-  bootstrap.py -> execution_handler_adapter.py -> execution_bridge.py:
-  every registered skill is wrapped as a SkillActionHandler in the
-  canonical HandlerRegistry, and SkillActionHandler.handle() calls
-  invoke_skill() underneath, so trust resolution and
-  SkillAuthorizationGate are never bypassed. No code change was needed.
-- ~~core/knowledge/ relationships/querying~~ — DONE. FactStore gained
-  get_facts_by_predicate(), get_facts_with_value(), and get_related()
-  (cycle-safe breadth-first walk), on top of the existing
-  get_facts_about() / get_fact(). No new table or graph engine —
-  relationships fall out of the existing subject-predicate-value schema.
+  main governed pipeline~~ — CONFIRMED sufficient. Every registered
+  skill is wrapped as a SkillActionHandler in the canonical
+  HandlerRegistry, and SkillActionHandler.handle() calls invoke_skill()
+  underneath, so trust resolution and SkillAuthorizationGate are never
+  bypassed.
+- ~~core/knowledge/ relationships/querying~~ — DONE, and exposed through
+  the governed knowledge.recall_fact skill (see Phase 2).
 - ~~More perception modalities (audio, image, sensor)~~ — DONE.
   AudioPerceptionCapturer, ImagePerceptionCapturer, and
-  SensorPerceptionCapturer added, all implementing the existing
-  PerceptionCapturer interface, all registered in the default
-  PerceptionRegistry. None interpret their input — audio transcription
-  and vision understanding remain a separate, not-yet-built provider
-  abstraction (same pattern as core/cognition/providers/), tracked
-  below as still open.
-- ~~Audio/image interpretation providers (speech-to-text, vision
-  understanding)~~ — DONE. TranscriptionProvider (OpenAITranscriptionProvider
-  real via Whisper; NexaLocalTranscriptionProvider reserved,
-  not_implemented) and VisionUnderstandingProvider
-  (AnthropicVisionProvider real; NexaLocalVisionProvider reserved,
-  not_implemented) added to core/cognition/providers/, each with its
-  own router (transcription_router.py, vision_router.py), following
-  the exact same interface/router/local-fallback pattern as
-  ReasoningProvider. Consumes the PerceptionEvents the audio/image
-  capturers produce.
+  SensorPerceptionCapturer implement the existing PerceptionCapturer
+  interface, all registered in the default PerceptionRegistry.
+- ~~Audio/image interpretation providers~~ — DONE (see Phase 3).
+- ~~Voice commands~~ — DONE. core/semantic/parser/voice_command_bridge.py
+  transcribes an audio PerceptionEvent via the configured
+  TranscriptionProvider, then resolves the transcribed text through
+  the SAME global_usl_mapper text commands already use — no separate
+  voice-only intent table. Fails closed (governed_execution_authorized
+  stays False) on any transcription problem, so a spoken command never
+  gets guessed at from a partial or failed transcription.
 - ~~ResourceTransactionHandler~~ — DONE, with an explicitly documented
   assumption (no formal product spec existed): a "resource
   transaction" is treated as a signed delta against a named,
   per-subject running balance, stored via the existing FactStore
   (predicate "resource_balance:<resource_name>"). Fails closed on
   malformed input and on any transaction that would take a balance
-  below zero. If this does not match the intended product meaning,
-  only core/execution/executor/action_handlers.py's
-  ResourceTransactionHandler needs to change.
-- Multimodal identity recognition + voice commands — planned in
-  docs/roadmap/FUTURE_multimodal_identity.md, pending backend decisions.
-
-## Phase 5+ — Not started
-
-core/events/ (message bus), multi-surface applications (desktop/mobile/
-web), core/platform/, remaining core/services/ (storage, monitoring,
-telemetry), community/enterprise skill tiers, core/spatial/ (3D/AR/VR),
-tools/, scripts/ beyond what exists.
-
-## Frontend (web/, root-level static HTML/CSS/JS)
-
-No build tooling — plain index.html/style.css/script.js, opens
-directly in any browser. React/Vite/Tailwind setup (src/, package.json,
-node_modules/) was removed; this static version is the sole frontend.
-
-Done: tropical color palette applied (Deep Ocean/Palm Emerald/Tropical
-Mint/Sunset Gold/Walnut/Ivory), glass-sphere login orb with internal
-swirl, tropical-leaf accents on the login screen, subtle (4% opacity)
-geometric card pattern.
-
-Not yet done: typography still Space Grotesk/Inter/JetBrains Mono (no
-font change has been made); header/login screen still reads "Admin"
-(no name change has been made); dashboard content (skills list,
-provider list, pipeline animation) is static/hardcoded, not wired to
-any backend endpoint.
-
-## Known production-readiness gaps
-
-- ~~No structured logging~~ — DONE
-- ~~SQLiteMemoryAdapter defaults to `:memory:`~~ — DONE
-- ~~SemanticRouter.dispatch() does not catch handler exceptions~~ — DONE
-- ~~Gateway/Executor registry singleton bug~~ — DONE
-- ~~Identity/authorization coupling~~ — DONE (TrustSession)
-- ~~No config validation at startup~~ — DONE
-- ~~ResourceTransactionHandler is still a no-op~~ — DONE, see Phase 4.
-- SkillAuthorizationGate's granted_permissions now correctly derives
-  from a real TrustSession via trust_bridge.py — DONE.
+  below zero. Still pending product confirmation that this matches
+  the intended meaning.
+- ~~Live execution pipeline state~~ — DONE. core/execution/state/pipeline_state.py's
+  PIPELINE_STATE existed but was never called by anything. Now
+  ExecutionPipeline.process() (core/execution/pipeline/pipeline.py)
+  advances it at each real stage transition (Planner/Orchestrator/
+  Dispatcher/Authorization/Executor), and a short-circuited request
+  (blocked/awaiting_confirmation) correctly leaves state at the last
+  stage that actually ran rather than claiming it reached further.
+- Multimodal identity recognition (voiceprint/passphrase confirmation)
+  — NOT started. Requires a product decision that hasn't been made:
+  how should NEXA confirm who's speaking — a known voice sample, a
+  spoken passphrase, or something else. Voice COMMANDS (what to do)
+  are done and separate from voice
