@@ -3,8 +3,8 @@ NEXA Africa Operating System
 File: core/interface/api/dashboard.py
 Constitutional Owner: Bill Odhiambo Othieno
 Description: NEXA dashboard API. Reports real, live system state
-             (skill counts, configured providers) rather than static
-             placeholder values.
+             (skill counts, configured providers, current execution
+             pipeline stage) rather than static placeholder values.
 """
 
 from __future__ import annotations
@@ -12,6 +12,7 @@ from __future__ import annotations
 import os
 
 from skills.registry.bootstrap import global_skill_registry
+from core.execution.state.pipeline_state import PIPELINE_STATE
 
 _PROVIDER_ENV_VARS = {
     "anthropic": "ANTHROPIC_API_KEY",
@@ -44,14 +45,21 @@ def _provider_connection_status() -> dict[str, str]:
 def dashboard_status() -> dict[str, object]:
     """
     Return the current NEXA dashboard status, derived from real system
-    state: actual registered skill counts and actual configured
-    provider API keys — never hardcoded placeholder values.
+    state: actual registered skill counts, actual configured provider
+    API keys, and the actual live execution pipeline stage — never
+    hardcoded placeholder values.
+
+    "pipeline" reflects whatever the most recent ExecutionPipeline.process()
+    call reached (see core/execution/pipeline/pipeline.py), not a static
+    list. Before any request has been processed, it reports "Decision",
+    PIPELINE_STATE's starting stage.
     """
     return {
         "status": "online",
         "system": "NEXA",
         "skills": _count_skills_by_tier(),
         "providers": _provider_connection_status(),
+        "pipeline": PIPELINE_STATE.snapshot(),
     }
 
 

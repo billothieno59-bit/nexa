@@ -1,5 +1,6 @@
 from core.interface.api.dashboard import dashboard_status
 from skills.registry.bootstrap import global_skill_registry
+from core.execution.state.pipeline_state import PIPELINE_STATE
 
 
 def test_dashboard_status_shape():
@@ -8,6 +9,7 @@ def test_dashboard_status_shape():
     assert result["system"] == "NEXA"
     assert "skills" in result
     assert "providers" in result
+    assert "pipeline" in result
 
 
 def test_dashboard_reports_real_skill_counts():
@@ -33,3 +35,20 @@ def test_dashboard_reports_provider_keys():
     assert "elevenlabs" in providers
     for status in providers.values():
         assert status in ("connected", "not_configured")
+
+
+def test_dashboard_reports_live_pipeline_stage():
+    PIPELINE_STATE.reset()
+
+    result = dashboard_status()
+    pipeline = result["pipeline"]
+
+    assert pipeline["current_stage"] == "Decision"
+    assert pipeline["current_index"] == 0
+    assert len(pipeline["stages"]) == 6
+
+    PIPELINE_STATE.next()
+    result_after = dashboard_status()
+    assert result_after["pipeline"]["current_stage"] == "Planner"
+
+    PIPELINE_STATE.reset()
