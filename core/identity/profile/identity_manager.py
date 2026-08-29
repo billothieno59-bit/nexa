@@ -24,7 +24,13 @@ class UniversalIdentityManager:
             is_governed=True
         )
 
-    def register_identity_profile(self, identity_id: str, role_tag: str, display_alias: str, is_governed: bool) -> None:
+    def register_identity_profile(
+        self,
+        identity_id: str,
+        role_tag: str,
+        display_alias: str,
+        is_governed: bool,
+    ) -> None:
         """Saves a raw profile format dataset securely onto the invariant identity ledger tree."""
         if not identity_id.strip():
             raise ValueError("Identity unique key attributes cannot be empty strings.")
