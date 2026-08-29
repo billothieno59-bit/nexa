@@ -7,6 +7,52 @@ files, verified against the actual file contents at time of writing.
 
 ---
 
+## 2026-08-29 — Removed dead duplicate jarvis_orb.js; docs synced with code
+
+**What changed:** Two unrelated cleanups made in the same pass:
+
+1. Deleted `web/components/jarvis_orb.js` — a standalone `attachJarvisOrb()`
+   module never imported by `index.html` or `script.js` (confirmed
+   zero references anywhere in the repo). It duplicated the orb-state
+   logic already implemented directly in `script.js`, but with the
+   pre-retheme color palette (`#00C2FF` cyan, `#8B5CF6` violet,
+   `#FFB703` gold) — inconsistent with the tropical palette already
+   applied everywhere else. Dead, duplicate, and stale; removed rather
+   than left to confuse a future reader.
+
+2. `docs/roadmap/ROADMAP.md` and `docs/roadmap/FUTURE_multimodal_identity.md`
+   updated to reflect that `core/semantic/parser/voice_command_bridge.py`
+   (voice commands) is real and tested — both docs previously said this
+   was "pending backend decisions" / "PLANNED, NOT STARTED," which was
+   no longer true. Also documented a concrete, traced finding: the
+   canonical `Decision -> ExecutionPlanner -> ExecutionOrchestrator ->
+   ExecutionExecutor` pipeline's `create_plan()` currently hardcodes
+   `PlanStep.action` to the literal strings `"respond"` or
+   `"await_confirmation"` — never to the actual intent token. This
+   means no registered handler (not `ResourceTransactionHandler`, not
+   any skill) can currently fire through this pipeline for text OR
+   voice input. This is a pre-existing gap in core planning logic, not
+   specific to voice, and changing `create_plan()`'s mapping is a
+   meaningful behavior change to an already-tested module — flagged
+   for a decision rather than changed silently.
+
+**Files touched:**
+- `web/components/jarvis_orb.js` (deleted)
+- `docs/roadmap/ROADMAP.md` (modified)
+- `docs/roadmap/FUTURE_multimodal_identity.md` (modified)
+
+**Verified:** manual `grep` across the full repo confirmed zero
+remaining references to `jarvis_orb.js` or `attachJarvisOrb` before
+deletion. Full `ruff check . --fix` / `python -m pytest` not yet
+re-run against this specific change — pending.
+
+**Open decision, not yet made:** how a resolved intent token
+(from either `voice_command_bridge.py` or a future text equivalent)
+should actually reach a registered handler, given the `create_plan()`
+gap above. Needs a decision before any wiring code is written.
+
+---
+
 ## 2026-08-29 — Voice generation integration test fix (CONFIRMED)
 
 **What changed:** `skills/privileged/tests/test_voice_generation_integration.py`
@@ -181,4 +227,37 @@ design direction.
 
 **What changed:** Replaced the prior dark-violet/neon-cyan color
 scheme with a tropical palette per design direction: Deep Ocean
-`#07131F`,
+`#07131F`, Palm Emerald `#0F2A25`, Tropical Mint `#22D3A6`, Sunset
+Gold `#C68A2B`, Walnut `#8B5E3C`, Ivory `#F5F7F4`.
+
+- `--violet` repurposed to Walnut (`#8B5E3C`) rather than removed —
+  still used for the orb's "Thinking" state.
+- `--cyan` set equal to Tropical Mint (`#22D3A6`), since the palette
+  has no distinct cyan — gradients that previously blended emerald+cyan
+  now render as a single mint tone.
+- Background radial gradient's dark accent changed from `#17204a`
+  (navy-purple) to `#0F2A25` (Palm Emerald).
+- Orb's four states (Idle/Listening/Thinking/Speaking) recolored to
+  match — Thinking now uses Walnut instead of the prior violet.
+
+**Not changed:** typography (still Space Grotesk / Inter / JetBrains
+Mono — no font swap was made), and the header's "Admin" chip (still
+reads "Admin", not renamed).
+
+**Files touched:**
+- `style.css` (`:root` color tokens, background gradient, orb-related
+  colors)
+- `script.js` (`orbStates` array hex values)
+
+**Verified:** 308/308 tests passed after this change (CSS/JS-only,
+no Python touched).
+
+---
+
+## Earlier history (before this log started)
+
+Everything before 2026-08-27 predates this file and is tracked only
+in git history: the governed execution pipeline, the Universal
+Layers, the full builtin + privileged skills catalog, the provider
+abstractions, and the original React (`src/`) frontend that was later
+replaced by the plain HTML/CSS/JS version at project root.
