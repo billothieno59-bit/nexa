@@ -1,58 +1,55 @@
-# ==========================
+# =====================================
 # NEXA Africa Operating System
-# Canonical .gitignore
-# ==========================
+# Canonical Git Ignore
+# =====================================
 
-# Python virtual environments
+# Virtual Environments
 venv/
 .venv/
 env/
 ENV/
 
-# Python cache
+# Python Cache
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Pytest
+# Test Cache
 .pytest_cache/
 
-# Ruff
+# Ruff Cache
 .ruff_cache/
 
 # Coverage
 .coverage
-htmlcov/
 .coverage.*
+htmlcov/
 
 # Logs
 *.log
 logs/
 log/
 
-# Build artifacts
+# Build
 build/
 dist/
 *.egg-info/
+
+# Runtime
+cache/
+caches/
+output/
+outputs/
+uploads/
+.next/
+
+# Local Models
+models/
 
 # IDE
 .vscode/
 .idea/
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
-
-# Local databases
-*.sqlite3-journal
-
-# Local models (downloaded separately)
-models/
-
-# Runtime outputs
-output/
-outputs/
-uploads/
-cache/
-caches/
-.next/
