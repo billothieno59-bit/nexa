@@ -19,6 +19,7 @@ dependencies = [
 testpaths = [
     "core",
     "skills",
+    "web",
 ]
 pythonpath = [
     ".",
