@@ -13,12 +13,23 @@ def make_populated_registry():
     register_remember(registry)
     register_recall(registry)
     gate = SkillAuthorizationGate(registry)
-
     remember = gate.get_authorized_handler(
         "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
     )
     remember(subject="nexa", predicate="is_a", value="operating system")
+    return registry, gate
 
+
+def make_related_registry():
+    registry = SkillRegistry()
+    register_remember(registry)
+    register_recall(registry)
+    gate = SkillAuthorizationGate(registry)
+    remember = gate.get_authorized_handler(
+        "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
+    )
+    remember(subject="farmer_a", predicate="member_of", value="cooperative_x")
+    remember(subject="cooperative_x", predicate="based_in", value="Nairobi")
     return registry, gate
 
 
@@ -26,7 +37,6 @@ def test_skill_requires_knowledge_read_permission():
     registry = SkillRegistry()
     register_recall(registry)
     gate = SkillAuthorizationGate(registry)
-
     assert gate.is_authorized("knowledge.recall_fact", frozenset()) is False
     assert gate.is_authorized("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"})) is True
 
@@ -34,7 +44,6 @@ def test_skill_requires_knowledge_read_permission():
 def test_recall_specific_predicate_found():
     registry, gate = make_populated_registry()
     handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
-
     result = handler(subject="nexa", predicate="is_a")
     assert result["status"] == "found"
     assert result["value"] == "operating system"
@@ -43,7 +52,6 @@ def test_recall_specific_predicate_found():
 def test_recall_specific_predicate_not_found():
     registry, gate = make_populated_registry()
     handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
-
     result = handler(subject="nexa", predicate="nonexistent")
     assert result["status"] == "not_found"
 
@@ -51,10 +59,51 @@ def test_recall_specific_predicate_not_found():
 def test_recall_all_facts_about_subject():
     registry, gate = make_populated_registry()
     handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
-
     result = handler(subject="nexa")
     assert result["status"] == "found"
     assert len(result["facts"]) == 1
+
+
+def test_recall_related_facts_requires_same_permission():
+    registry = SkillRegistry()
+    register_recall(registry)
+    gate = SkillAuthorizationGate(registry)
+    with_permission = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
+    assert callable(with_permission)
+
+
+def test_recall_related_facts_single_hop():
+    registry, gate = make_related_registry()
+    handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
+    result = handler(subject="farmer_a", max_depth=1)
+    assert result["status"] == "found"
+    assert result["max_depth"] == 1
+    assert len(result["related_facts"]) == 1
+    assert result["related_facts"][0]["value"] == "cooperative_x"
+
+
+def test_recall_related_facts_two_hops():
+    registry, gate = make_related_registry()
+    handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
+    result = handler(subject="farmer_a", max_depth=2)
+    assert result["status"] == "found"
+    values = {f["value"] for f in result["related_facts"]}
+    assert values == {"cooperative_x", "Nairobi"}
+
+
+def test_recall_related_facts_no_relations_returns_not_found():
+    registry, gate = make_populated_registry()
+    handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
+    result = handler(subject="a_subject_with_no_stored_facts_at_all_zzz", max_depth=3)
+    assert result["status"] == "not_found"
+    assert result["related_facts"] == []
+
+
+def test_recall_rejects_negative_max_depth():
+    registry, gate = make_populated_registry()
+    handler = gate.get_authorized_handler("knowledge.recall_fact", frozenset({"KNOWLEDGE.READ"}))
+    result = handler(subject="nexa", max_depth=-1)
+    assert result["status"] == "rejected"
 
 
 def test_manifest_shape():

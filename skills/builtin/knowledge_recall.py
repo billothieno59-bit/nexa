@@ -5,6 +5,12 @@ Constitutional Owner: Bill Odhiambo Othieno
 Description: Builtin skill that reads facts back from FactStore.
              Symmetric counterpart to knowledge.remember_fact — completes
              the write/read cycle for durable knowledge.
+
+             Also exposes FactStore.get_related() (a cycle-safe breadth-
+             first walk over stored facts) via an optional max_depth
+             parameter, so relationship queries go through the same
+             governed, authorized skill as flat fact lookups rather than
+             a separate unauthorized API endpoint.
 """
 
 from __future__ import annotations
@@ -18,7 +24,7 @@ from core.knowledge.store import FactStore
 RECALL_FACT_SKILL = SkillManifest(
     skill_id="knowledge.recall_fact",
     name="Recall Fact",
-    description="Retrieves a stored fact by subject and predicate, or all facts about a subject.",
+    description="Retrieves a stored fact by subject and predicate, all facts about a subject, or related facts up to a given depth.",
     tier="builtin",
     required_permissions=("KNOWLEDGE.READ",),
 )
@@ -26,7 +32,34 @@ RECALL_FACT_SKILL = SkillManifest(
 _store = FactStore()
 
 
-def _recall_fact_handler(subject: str, predicate: Optional[str] = None) -> Dict[str, Any]:
+def _recall_fact_handler(
+    subject: str,
+    predicate: Optional[str] = None,
+    max_depth: Optional[int] = None,
+) -> Dict[str, Any]:
+    if max_depth is not None:
+        if not isinstance(max_depth, int) or max_depth < 0:
+            return {
+                "status": "rejected",
+                "error": "max_depth must be a non-negative integer.",
+            }
+
+        related_facts = _store.get_related(subject, max_depth=max_depth)
+        return {
+            "status": "found" if related_facts else "not_found",
+            "subject": subject,
+            "max_depth": max_depth,
+            "related_facts": [
+                {
+                    "subject": f.subject,
+                    "predicate": f.predicate,
+                    "value": f.value,
+                    "provenance": f.provenance,
+                }
+                for f in related_facts
+            ],
+        }
+
     if predicate is not None:
         fact = _store.get_fact(subject, predicate)
         if fact is None:
