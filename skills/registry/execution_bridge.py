@@ -9,6 +9,13 @@ Description: Connects a caller identity to real skill execution: resolves
              This is the wiring that makes skills reachable by an
              identified caller, rather than skills and identity/trust
              being two disconnected systems.
+
+             Also applies per-caller rate limiting (TokenBucketRateLimiter)
+             before authorization, so a caller cannot exhaust skill
+             execution regardless of what permissions they hold. This is
+             the single choke point every skill invocation passes
+             through, so it is the correct place to enforce this rather
+             than per-skill.
 """
 
 from __future__ import annotations
@@ -16,6 +23,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from core.applications.api.rate_limiter import TokenBucketRateLimiter
 from core.governance.trust.session import resolve_trust_session
 from skills.registry.trust_bridge import permissions_for_trust_session
 from skills.registry.registry import SkillRegistry, global_skill_registry
@@ -23,6 +31,8 @@ from skills.registry.authorization import SkillAuthorizationGate, SkillAuthoriza
 from core.services.logging.logger import get_logger
 
 logger = get_logger(__name__)
+
+global_skill_rate_limiter = TokenBucketRateLimiter(rate=5.0, capacity=10.0)
 
 
 @dataclass(frozen=True)
@@ -42,21 +52,34 @@ def invoke_skill(
     skill_id: str,
     requested_intent: str,
     registry: Optional[SkillRegistry] = None,
+    rate_limiter: Optional[TokenBucketRateLimiter] = None,
     **kwargs: Any,
 ) -> SkillExecutionResult:
     """
     Resolve caller_id into a TrustSession, derive granted permissions,
-    and invoke skill_id only if authorized. Fails closed at every step:
+    and invoke skill_id only if the caller is within their rate limit
+    AND authorized. Fails closed at every step: rate limit exceeded,
     unknown skill, insufficient permissions, or handler failure all
-    produce a "denied"/"error" result rather than raising uncontrolled.
+    produce a non-"executed" result rather than raising uncontrolled.
     """
     active_registry = registry or global_skill_registry
+    active_rate_limiter = rate_limiter or global_skill_rate_limiter
+
+    if not active_rate_limiter.allow_request(caller_id):
+        logger.warning(
+            "Skill invocation rate-limited for caller_id=%s skill_id=%s",
+            caller_id, skill_id,
+        )
+        return SkillExecutionResult(
+            status="rate_limited",
+            skill_id=skill_id,
+            message="Too many requests. Please wait before trying again.",
+        )
 
     trust_session = resolve_trust_session(caller_id, requested_intent)
     granted_permissions = permissions_for_trust_session(trust_session)
 
     gate = SkillAuthorizationGate(active_registry)
-
     try:
         handler = gate.get_authorized_handler(skill_id, granted_permissions)
     except SkillAuthorizationError as exc:
@@ -94,4 +117,5 @@ def invoke_skill(
 __all__ = [
     "SkillExecutionResult",
     "invoke_skill",
+    "global_skill_rate_limiter",
 ]
