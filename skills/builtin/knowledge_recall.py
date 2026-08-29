@@ -24,7 +24,10 @@ from core.knowledge.store import FactStore
 RECALL_FACT_SKILL = SkillManifest(
     skill_id="knowledge.recall_fact",
     name="Recall Fact",
-    description="Retrieves a stored fact by subject and predicate, all facts about a subject, or related facts up to a given depth.",
+    description=(
+        "Retrieves a stored fact by subject and predicate, all facts about "
+        "a subject, or related facts up to a given depth."
+    ),
     tier="builtin",
     required_permissions=("KNOWLEDGE.READ",),
 )
