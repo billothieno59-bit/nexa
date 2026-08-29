@@ -42,6 +42,13 @@ The authorization policy is the controlled gate between
 dispatch and execution.
 
 The executor remains dry-run only.
+
+Each real stage transition also advances core/execution/state/
+pipeline_state.py's PIPELINE_STATE, so PIPELINE_STATE.current_stage
+reflects genuine pipeline progress rather than sitting unused. A
+request that stops early (blocked, awaiting_confirmation) leaves
+PIPELINE_STATE at the last stage it actually reached — it is never
+advanced past a stage that did not run.
 """
 
 from __future__ import annotations
@@ -74,6 +81,8 @@ from core.execution.executor.executor import (
     ExecutionExecutor,
     ExecutionResult,
 )
+
+from core.execution.state.pipeline_state import PIPELINE_STATE
 
 
 @dataclass(frozen=True)
@@ -152,12 +161,17 @@ class ExecutionPipeline:
                 "ExecutionPipeline.process() requires a Decision."
             )
 
+        PIPELINE_STATE.reset()  # stage: Decision
+
+        PIPELINE_STATE.next()  # stage: Planner
         plan = self.planner.create_plan(decision)
 
+        PIPELINE_STATE.next()  # stage: Orchestrator
         orchestration = self.orchestrator.orchestrate(plan)
 
         plan = orchestration.plan
 
+        PIPELINE_STATE.next()  # stage: Dispatcher
         dispatch = self.dispatcher.dispatch(orchestration)
 
         if dispatch.status == "blocked":
@@ -226,6 +240,7 @@ class ExecutionPipeline:
                 execution=execution,
             )
 
+        PIPELINE_STATE.next()  # stage: Authorization
         authorization = self.authorization_policy.authorize(plan)
 
         if authorization.status != "authorized":
@@ -244,6 +259,7 @@ class ExecutionPipeline:
                 execution=execution,
             )
 
+        PIPELINE_STATE.next()  # stage: Executor
         execution = self.executor.execute(plan)
 
         return ExecutionPipelineResult(
