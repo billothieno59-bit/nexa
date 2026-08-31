@@ -45,7 +45,13 @@ can cause real harm.
 knowledge.recall_fact also exposes FactStore.get_related() (cycle-safe
 breadth-first relationship walk) via an optional max_depth parameter,
 so relationship queries go through the same governed, authorized path
-as flat fact lookups.
+as flat fact lookups. knowledge.recall_fact and knowledge.remember_fact
+both accept an optional injectable FactStore, so tests use an isolated
+FactStore(db_path=":memory:") instead of sharing the default persistent
+data/knowledge_facts.db across the whole suite — this closed a real
+test-isolation risk (a shared file caused one false test failure this
+session). Production callers that omit the store keep the exact
+previous behavior: one shared default store, lazily created once.
 
 ## Phase 3 — NEXA's own AI (IN PROGRESS)
 
@@ -112,8 +118,83 @@ already working.
   Dispatcher/Authorization/Executor), and a short-circuited request
   (blocked/awaiting_confirmation) correctly leaves state at the last
   stage that actually ran rather than claiming it reached further.
+- ~~Minimal HTTP server~~ — DONE, deliberately narrow.
+  core/applications/api/http_server.py exposes exactly one route,
+  GET /api/dashboard, delegating to the existing dashboard_status() —
+  no new data source. GET only; no route mutates anything. No skill
+  execution (invoke_skill(), especially the paid generation.voice
+  call) is reachable over HTTP. No API key or secret value is ever
+  placed in a response body — tested explicitly. No CORS policy is
+  configured, so this is same-origin only for now. This is a first
+  safe slice, not the full server surface.
 - Multimodal identity recognition (voiceprint/passphrase confirmation)
   — NOT started. Requires a product decision that hasn't been made:
   how should NEXA confirm who's speaking — a known voice sample, a
   spoken passphrase, or something else. Voice COMMANDS (what to do)
-  are done and separate from voice
+  are done and separate from voice IDENTITY (who is asking) — the
+  identity half is still open. Planned in
+  docs/roadmap/FUTURE_multimodal_identity.md.
+
+## Phase 5+ — Not started
+
+core/events/ (message bus), multi-surface applications (desktop/mobile/
+web) beyond the current static web/ frontend, core/platform/, remaining
+core/services/ (storage, monitoring, telemetry), community/enterprise
+skill tiers, core/spatial/ (3D/AR/VR), tools/, scripts/ beyond what
+exists.
+
+A minimal read-only HTTP server now exists (see Phase 4), but it is
+not yet wired into web/ — the static frontend does not call it, and
+no CORS policy has been decided. Standing up the rest of the server
+(routes for skill execution, authentication over HTTP, CORS) is a
+deliberate architectural decision, not a small wiring task, and has
+not been made.
+
+## Frontend (web/, root-level static HTML/CSS/JS)
+
+No build tooling — plain index.html/style.css/script.js, opens
+directly in any browser. React/Vite/Tailwind setup (src/, package.json,
+node_modules/) was removed; this static version is the sole frontend.
+
+Done: tropical color palette applied (Deep Ocean/Palm Emerald/Tropical
+Mint/Sunset Gold/Walnut/Ivory), glass-sphere login orb with internal
+swirl, tropical-leaf accents on the login screen, subtle (4% opacity)
+geometric card pattern, walnut wood-grain card accent strip, single
+decorative plant silhouette in the right panel. Typography swapped
+from Space Grotesk to Fraunces (wordmark, section headers, orb state
+label, login title, footer tagline). Header/login screen renamed from
+"Admin" to "Bill".
+
+Backend: core/interface/api/dashboard.py is the single real dashboard
+implementation — reports actual registered skill counts (from
+global_skill_registry), actual configured provider API keys (checked
+via os.environ, never hardcoded as connected), and the actual live
+execution pipeline stage (PIPELINE_STATE.snapshot()). web/api/dashboard.py
+delegates to it rather than duplicating its logic. A third
+implementation (core/state/system_state.py + core/interface/api/services/dashboard_service.py)
+was found and removed — it hardcoded all providers as connected=True
+regardless of actual API keys and a fake version/phase string.
+
+Still not fully done: the static frontend in web/ does not yet call
+GET /api/dashboard — the route exists and is tested (see Phase 4), but
+nothing in index.html/script.js fetches it yet. Skill execution
+(including generation.voice for the login screen's spoken greeting)
+is still not reachable from the browser at all.
+
+## Known production-readiness gaps
+
+- ~~No structured logging~~ — DONE
+- ~~SQLiteMemoryAdapter defaults to `:memory:`~~ — DONE
+- ~~SemanticRouter.dispatch() does not catch handler exceptions~~ — DONE
+- ~~Gateway/Executor registry singleton bug~~ — DONE
+- ~~Identity/authorization coupling~~ — DONE (TrustSession)
+- ~~No config validation at startup~~ — DONE
+- ~~ResourceTransactionHandler is still a no-op~~ — DONE, see Phase 4.
+- ~~Rate limiting built but never enforced anywhere~~ — DONE, see Phase 1.
+- ~~knowledge.recall_fact / knowledge.remember_fact share an
+  unisolated persistent FactStore in tests~~ — DONE, see Phase 2.
+- SkillAuthorizationGate's granted_permissions now correctly derives
+  from a real TrustSession via trust_bridge.py — DONE.
+- No CORS policy exists for the new HTTP server. Not a bug yet since
+  nothing calls it cross-origin, but will need a deliberate decision
+  before the browser frontend can use it.
