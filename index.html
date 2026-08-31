@@ -135,7 +135,7 @@
       <div class="glass-card wood-accent">
         <div class="status-header">
           <h2 class="status-title">System Status</h2>
-          <span class="status-pass">364 / 364 PASS</span>
+          <span class="status-pass" id="statusPass">Loading…</span>
         </div>
         <div class="status-grid">
           <div class="status-item"><span class="status-dot green"></span>Cognition</div>
@@ -146,7 +146,7 @@
           <div class="status-item"><span class="status-dot green"></span>Identity</div>
           <div class="status-item"><span class="status-dot green"></span>Perception</div>
         </div>
-        <div class="status-footer">Architecture: Phase 2 &middot; Tests: 364/364 PASS</div>
+        <div class="status-footer" id="statusFooter">Connecting to /api/dashboard…</div>
       </div>
 
     </main>
@@ -154,18 +154,18 @@
     <aside class="right-panel">
       <div class="glass-card wood-accent">
         <h3>AI Providers</h3>
-        <div class="provider-list">
-          <div class="provider-item">
-            <span><span class="provider-dot live"></span>Anthropic</span>
-            <span class="provider-status connected">Connected</span>
+        <div class="provider-list" id="providerList">
+          <div class="provider-item" data-provider="anthropic">
+            <span><span class="provider-dot" id="dotAnthropic"></span>Anthropic</span>
+            <span class="provider-status" id="statusAnthropic">Loading…</span>
           </div>
-          <div class="provider-item">
-            <span><span class="provider-dot live"></span>OpenAI</span>
-            <span class="provider-status connected">Connected</span>
+          <div class="provider-item" data-provider="openai">
+            <span><span class="provider-dot" id="dotOpenai"></span>OpenAI</span>
+            <span class="provider-status" id="statusOpenai">Loading…</span>
           </div>
-          <div class="provider-item">
-            <span><span class="provider-dot live"></span>ElevenLabs</span>
-            <span class="provider-status connected">Connected</span>
+          <div class="provider-item" data-provider="elevenlabs">
+            <span><span class="provider-dot" id="dotElevenlabs"></span>ElevenLabs</span>
+            <span class="provider-status" id="statusElevenlabs">Loading…</span>
           </div>
           <div class="provider-item">
             <span><span class="provider-dot reserved"></span>NEXA Local</span>
@@ -185,7 +185,6 @@
 
       <div class="plant-accent" aria-hidden="true"></div>
     </aside>
-
   </div>
 
   <footer>

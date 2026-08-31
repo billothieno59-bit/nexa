@@ -61,3 +61,19 @@ def test_no_skill_execution_route_exists(client):
 def test_unknown_route_returns_404(client):
     response = client.get("/api/nonexistent")
     assert response.status_code == 404
+
+
+def test_index_route_serves_html(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"NEXA" in response.data
+
+
+def test_style_route_serves_css(client):
+    response = client.get("/style.css")
+    assert response.status_code == 200
+
+
+def test_script_route_serves_js(client):
+    response = client.get("/script.js")
+    assert response.status_code == 200

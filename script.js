@@ -47,28 +47,6 @@ orb.addEventListener('click', function () {
   applyOrbState(orbIndex);
 });
 
-// Execution pipeline — visual illumination only, not wired to real jobs yet.
-const pipelineStages = document.querySelectorAll('.pipeline-stage');
-let activeStage = 0;
-
-function animatePipeline() {
-  pipelineStages.forEach(stage => {
-    stage.classList.remove('active');
-    stage.querySelector('.stage-dot').classList.remove('active');
-  });
-
-  const current = pipelineStages[activeStage];
-  if (current) {
-    current.classList.add('active');
-    current.querySelector('.stage-dot').classList.add('active');
-  }
-
-  activeStage = (activeStage + 1) % pipelineStages.length;
-}
-
-animatePipeline();
-setInterval(animatePipeline, 1200);
-
 // Real clock, no fabricated data anywhere else on this page.
 function updateTime() {
   const now = new Date();
@@ -79,3 +57,67 @@ function updateTime() {
 
 updateTime();
 setInterval(updateTime, 30000);
+
+// --- Live backend data via GET /api/dashboard ---
+// Same route this static page can now reach when served by
+// core/applications/api/http_server.py (same-origin). Replaces the
+// previously hardcoded provider "Connected" labels, the fake test-count
+// claim, and the animated (not real) pipeline stage cycling.
+
+const pipelineStages = document.querySelectorAll('.pipeline-stage');
+
+function applyPipelineStage(currentIndex) {
+  pipelineStages.forEach((stage, i) => {
+    const active = i === currentIndex;
+    stage.classList.toggle('active', active);
+    stage.querySelector('.stage-dot').classList.toggle('active', active);
+  });
+}
+
+function applyProviderStatus(providerKey, elementIdSuffix) {
+  return function (status) {
+    const dot = document.getElementById('dot' + elementIdSuffix);
+    const label = document.getElementById('status' + elementIdSuffix);
+    if (!dot || !label) return;
+
+    const connected = status === 'connected';
+    dot.classList.toggle('live', connected);
+    dot.classList.toggle('reserved', !connected);
+    label.textContent = connected ? 'Connected' : 'Not Configured';
+    label.classList.toggle('connected', connected);
+    label.classList.toggle('reserved', !connected);
+  };
+}
+
+async function refreshDashboard() {
+  let data;
+  try {
+    const response = await fetch('/api/dashboard');
+    if (!response.ok) throw new Error('Dashboard request failed: ' + response.status);
+    data = await response.json();
+  } catch (err) {
+    document.getElementById('statusPass').textContent = 'Offline';
+    document.getElementById('statusFooter').textContent =
+      'Could not reach /api/dashboard — is core/applications/api/http_server.py running?';
+    return;
+  }
+
+  const skills = data.skills || {};
+  document.getElementById('statusPass').textContent =
+    `${skills.total ?? '—'} SKILLS REGISTERED`;
+  document.getElementById('statusFooter').textContent =
+    `${skills.builtin ?? '—'} Builtin \u00b7 ${skills.privileged ?? '—'} Privileged`;
+
+  const providers = data.providers || {};
+  applyProviderStatus('anthropic', 'Anthropic')(providers.anthropic);
+  applyProviderStatus('openai', 'Openai')(providers.openai);
+  applyProviderStatus('elevenlabs', 'Elevenlabs')(providers.elevenlabs);
+
+  const pipeline = data.pipeline || {};
+  if (typeof pipeline.current_index === 'number') {
+    applyPipelineStage(pipeline.current_index);
+  }
+}
+
+refreshDashboard();
+setInterval(refreshDashboard, 5000);
