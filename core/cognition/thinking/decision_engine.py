@@ -18,6 +18,7 @@ This module must remain deterministic and side-effect free.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 
@@ -63,7 +64,24 @@ class DecisionEngine:
     ) -> Decision:
         """
         Produce a Decision from an intent and its confidence score.
+        Malformed confidence (non-numeric, bool, NaN, infinite, or
+        outside [0, 1]) fails closed as blocked rather than being
+        compared as-is.
         """
+
+        if (
+            not isinstance(confidence, (int, float))
+            or isinstance(confidence, bool)
+            or not math.isfinite(float(confidence))
+            or not 0.0 <= float(confidence) <= 1.0
+        ):
+            return Decision(
+                decision_type="blocked",
+                intent="unknown" if not isinstance(intent, str) else (intent.strip() or "unknown"),
+                confidence=0.0,
+                requires_confirmation=False,
+                reason="Invalid confidence. Expected a finite number between 0 and 1.",
+            )
 
         if not isinstance(intent, str) or not intent.strip():
             return Decision(
@@ -80,16 +98,16 @@ class DecisionEngine:
             return Decision(
                 decision_type="blocked",
                 intent=cleaned_intent,
-                confidence=confidence,
+                confidence=float(confidence),
                 requires_confirmation=False,
                 reason="Intent is explicitly blocked.",
             )
 
-        if confidence < self.CONFIDENCE_THRESHOLD:
+        if float(confidence) < self.CONFIDENCE_THRESHOLD:
             return Decision(
                 decision_type="confirmation_required",
                 intent=cleaned_intent,
-                confidence=confidence,
+                confidence=float(confidence),
                 requires_confirmation=True,
                 reason="Confidence below threshold.",
             )
@@ -97,7 +115,7 @@ class DecisionEngine:
         return Decision(
             decision_type="informational",
             intent=cleaned_intent,
-            confidence=confidence,
+            confidence=float(confidence),
             requires_confirmation=False,
             reason="No external side effect.",
         )
