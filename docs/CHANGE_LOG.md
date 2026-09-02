@@ -7,6 +7,56 @@ files, verified against the actual file contents at time of writing.
 
 ---
 
+## 2026-08-29 — resource.check_balance skill; http_server.py line-length fix; unreviewed code noted
+
+**What changed:** Three things in this pass:
+
+1. Added `skills/builtin/resource_check_balance.py` — a read-only
+   builtin skill (`resource.check_balance`, permission
+   `RESOURCE.READ`) that reads a resource balance back from
+   `FactStore`, the same way `knowledge.recall_fact` completes the
+   read side of `knowledge.remember_fact`. Read-only counterpart to
+   `ResourceTransactionHandler` (`core/execution/executor/action_handlers.py`),
+   which could previously only write balances, never read them back
+   through a governed, authorized path. Registered in
+   `skills/registry/bootstrap.py` alongside the other builtin skills.
+   Note: `RESOURCE_PREDICATE_PREFIX` is intentionally duplicated in
+   this file rather than imported from `action_handlers.py`, to avoid
+   a circular import (`action_handlers.py` imports
+   `skills.registry.bootstrap`, which registers this skill module) —
+   must be kept identical to `action_handlers.py`'s copy.
+
+2. Fixed a `ruff` line-length violation in
+   `core/applications/api/http_server.py:70` — a nested nine-way
+   ternary computing an HTTP status code from a skill result status.
+   Extracted into a small `_http_status_for()` helper function;
+   behavior is identical, just readable and within the 120-char limit.
+
+3. **Substantial code arrived in the same commit that was not built or
+   reviewed here**, swept in by `git add -A`:
+   `core/applications/api/web_skill_gateway.py`,
+   `core/applications/api/http_server.py` (the file this pass edited,
+   but its original content/design predates this pass),
+   `core/applications/cli.py`, `core/execution/pipeline/`,
+   `core/execution/state/`, `core/governance/trust/tests/test_voice_identity.py`,
+   and a restructured `web/` (now `web/index.html`, `web/script.js`,
+   `web/styles/style.css`). None of this has been read or verified
+   here beyond confirming it doesn't break `ruff`/`pytest` — it should
+   not be assumed to follow the same conventions or assumptions
+   documented elsewhere in this log until actually reviewed.
+
+**Files touched:**
+- `skills/builtin/resource_check_balance.py` (new)
+- `skills/builtin/tests/test_resource_check_balance.py` (new)
+- `skills/registry/bootstrap.py` (modified — one import, one
+  registration line added)
+- `core/applications/api/http_server.py` (modified — line-length fix)
+
+**Verified:** `ruff check . --fix` — all checks passed, 0 remaining
+errors. `python -m pytest` — 432 passed, 0 failed, 4.40s.
+
+---
+
 ## 2026-08-29 — Removed dead duplicate jarvis_orb.js; docs synced with code
 
 **What changed:** Two unrelated cleanups made in the same pass:
@@ -86,178 +136,4 @@ reading the repo to diagnose this failure.
 
 **What changed:** Added `TranscriptionProvider` and
 `VisionUnderstandingProvider` interfaces to
-`core/cognition/providers/base.py`. Real implementations:
-`OpenAITranscriptionProvider` (Whisper API), `AnthropicVisionProvider`
-(Claude vision). Reserved/not-yet-implemented local fallbacks:
-`NexaLocalTranscriptionProvider`, `NexaLocalVisionProvider` — both
-return `"not_implemented"` honestly rather than fabricating output.
-Each pair has its own router (`transcription_router.py`,
-`vision_router.py`) following the same pattern as the existing
-`ReasoningProvider` router.
-
-Also gave `ResourceTransactionHandler`
-(`core/execution/executor/action_handlers.py`) a real implementation,
-replacing the no-op placeholder. Explicitly documented assumption: no
-formal product spec for "resource transaction" existed, so it's
-treated as a signed delta against a named, per-subject running
-balance stored via the existing `FactStore` (predicate
-`resource_balance:<resource_name>`). Fails closed on malformed input
-and on any transaction that would take a balance below zero.
-
-**Files touched:**
-- `core/cognition/providers/base.py` (modified)
-- `core/cognition/providers/openai_transcription_provider.py` (new)
-- `core/cognition/providers/local_transcription_provider.py` (new)
-- `core/cognition/providers/transcription_router.py` (new)
-- `core/cognition/providers/anthropic_vision_provider.py` (new)
-- `core/cognition/providers/local_vision_provider.py` (new)
-- `core/cognition/providers/vision_router.py` (new)
-- `core/cognition/providers/tests/test_openai_transcription_provider.py` (new)
-- `core/cognition/providers/tests/test_local_transcription_provider.py` (new)
-- `core/cognition/providers/tests/test_transcription_router.py` (new)
-- `core/cognition/providers/tests/test_anthropic_vision_provider.py` (new)
-- `core/cognition/providers/tests/test_local_vision_provider.py` (new)
-- `core/cognition/providers/tests/test_vision_router.py` (new)
-- `core/execution/executor/action_handlers.py` (modified)
-- `core/execution/executor/tests/test_action_handlers.py` (modified)
-- `docs/roadmap/ROADMAP.md` (modified — Phase 4 items marked done)
-
-**Verified:** `ruff check . --fix` — all checks passed (after fixing
-7 line-length errors in `test_action_handlers.py` in a follow-up
-pass). `python -m pytest` — 342 passed at initial check of this batch
-alone; confirmed together with the fix above at 385 passed, 0 failed,
-in the same repo state.
-
-**Not done:** `core/events/` (message bus, Phase 5) and multimodal
-identity/voice-command work were deliberately not attempted — the
-former has no contract file yet (this codebase's own pattern requires
-contracts before implementation for new canonical layers), the latter
-is explicitly gated in `docs/roadmap/FUTURE_multimodal_identity.md`
-pending decisions not yet made.
-
----
-
-## 2026-08-27 — Removed leftover Vite/React/Tailwind tooling
-
-**What changed:** `src/` (the old React version) had already been
-deleted in a prior commit, but its supporting build tooling was still
-present at the project root and in `node_modules/`. Removed all of it
-since `web/`-style plain HTML/CSS/JS (`index.html`, `style.css`,
-`script.js` at project root) is the sole frontend and needs no build
-step.
-
-**Files removed:**
-- `package.json`
-- `package-lock.json`
-- `postcss.config.js`
-- `tailwind.config.js`
-- `vite.config.ts`
-- `node_modules/` (entire directory, ~125 MB)
-
-**Verified:** `python -m pytest` — 308 tests passed, confirming the
-Python test suite has no dependency on any of the removed JS tooling.
-
----
-
-## 2026-08-27 — Login screen: tropical leaves + sunrise edge lighting
-
-**What changed:** Added two SVG monstera-leaf silhouettes (top-left,
-bottom-right) with a slow independent sway animation to `#loginScreen`,
-and strengthened the warm gold radial glow along the bottom edge to
-read as a "sunrise." Both leaves disabled under
-`prefers-reduced-motion`.
-
-**Files touched:**
-- `index.html` (two `.login-leaf` divs added to `#loginScreen`)
-- `style.css` (`.login-leaf`, `.leaf-tl`, `.leaf-br`, `leafSwayA`/
-  `leafSwayB` keyframes added; `#loginScreen` background gradient
-  strengthened)
-
----
-
-## 2026-08-27 — Login orb upgraded: glass sphere with internal swirl
-
-**What changed:** Replaced the flat gradient-circle login orb with a
-layered glass-sphere effect closer to a reference "bioluminescent
-orb" image: two rotating conic-gradient swirl layers (blurred,
-screen-blended), two soft highlight patches, and a multi-layer
-`box-shadow` glow halo.
-
-**Files touched:**
-- `index.html` (`.login-orb-swirl` x2 and `.login-orb-highlight` x2
-  divs added inside `.login-orb`)
-- `style.css` (`.login-orb` background/box-shadow rewritten;
-  `.login-orb-swirl`, `.login-orb-highlight` and `swirlSpin` keyframe
-  added)
-
----
-
-## 2026-08-27 — Login screen added
-
-**What changed:** Added a full-screen login/welcome overlay shown on
-page load, dismissed by clicking "Enter NEXA" or pressing any key.
-Shows "Welcome back, Admin." with a pulsing orb.
-
-**Files touched:**
-- `index.html` (`#loginScreen` markup added before `#app`)
-- `style.css` (`#loginScreen` and related classes added)
-- `script.js` (dismiss-on-click / dismiss-on-keydown logic added)
-
-**Note:** the name shown is currently hardcoded as "Admin" (matches
-the header's existing profile chip). Not dynamic, not sourced from
-any config file.
-
----
-
-## 2026-08-27 — Subtle geometric card pattern added
-
-**What changed:** Added a repeating low-opacity (4%) SVG
-diamond-and-circle pattern as a `::before` overlay on all `.glass-card`
-elements, per the "African materials, subtle geometric patterns"
-design direction.
-
-**Files touched:**
-- `style.css` (`.glass-card` given `position: relative; overflow: hidden`,
-  `.glass-card::before` pattern layer added, `.glass-card > *` raised
-  to `z-index: 1`)
-
----
-
-## 2026-08-27 — Tropical Afrofuture palette applied
-
-**What changed:** Replaced the prior dark-violet/neon-cyan color
-scheme with a tropical palette per design direction: Deep Ocean
-`#07131F`, Palm Emerald `#0F2A25`, Tropical Mint `#22D3A6`, Sunset
-Gold `#C68A2B`, Walnut `#8B5E3C`, Ivory `#F5F7F4`.
-
-- `--violet` repurposed to Walnut (`#8B5E3C`) rather than removed —
-  still used for the orb's "Thinking" state.
-- `--cyan` set equal to Tropical Mint (`#22D3A6`), since the palette
-  has no distinct cyan — gradients that previously blended emerald+cyan
-  now render as a single mint tone.
-- Background radial gradient's dark accent changed from `#17204a`
-  (navy-purple) to `#0F2A25` (Palm Emerald).
-- Orb's four states (Idle/Listening/Thinking/Speaking) recolored to
-  match — Thinking now uses Walnut instead of the prior violet.
-
-**Not changed:** typography (still Space Grotesk / Inter / JetBrains
-Mono — no font swap was made), and the header's "Admin" chip (still
-reads "Admin", not renamed).
-
-**Files touched:**
-- `style.css` (`:root` color tokens, background gradient, orb-related
-  colors)
-- `script.js` (`orbStates` array hex values)
-
-**Verified:** 308/308 tests passed after this change (CSS/JS-only,
-no Python touched).
-
----
-
-## Earlier history (before this log started)
-
-Everything before 2026-08-27 predates this file and is tracked only
-in git history: the governed execution pipeline, the Universal
-Layers, the full builtin + privileged skills catalog, the provider
-abstractions, and the original React (`src/`) frontend that was later
-replaced by the plain HTML/CSS/JS version at project root.
+`core/co
