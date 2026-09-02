@@ -32,7 +32,9 @@ def test_knowledge_write_is_denied_interface_node_lacks_permission():
     # facts, only read them and use TEXT.PROCESS skills.
     result = run_web_skill(
         "knowledge.remember_fact",
-        subject="x", predicate="y", value="z",
+        subject="x",
+        predicate="y",
+        value="z",
     )
     assert result.status == "denied"
 

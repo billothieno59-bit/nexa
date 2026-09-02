@@ -32,7 +32,7 @@ class UniversalIdentityManager:
             identity_id="founder_root_001",
             role_tag=self.FOUNDER_ROLE,
             display_alias="Bill Odhiambo Othieno",
-            is_governed=True
+            is_governed=True,
         )
 
     def _register_identity_profile(
@@ -50,7 +50,7 @@ class UniversalIdentityManager:
             "role_tag": role_tag,
             "display_alias": display_alias,
             "is_governed": is_governed,
-            "verification_status": "LOCKED"
+            "verification_status": "LOCKED",
         }
 
     def register_identity_profile(
@@ -71,9 +71,7 @@ class UniversalIdentityManager:
                 "and cannot be registered through the public method."
             )
 
-        self._register_identity_profile(
-            identity_id, role_tag, display_alias, is_governed
-        )
+        self._register_identity_profile(identity_id, role_tag, display_alias, is_governed)
 
     def validate_access_rights(self, identity_id: str, required_role: str) -> Dict[str, Any]:
         """Validates systemic capability parameters, failing closed instantly on mismatched roles."""
@@ -84,19 +82,16 @@ class UniversalIdentityManager:
                 "authorized": False,
                 "reason": "Profile identity record matching provided query not found.",
                 "auth_status": "CLOSED",
-                "execution_clearance": False
+                "execution_clearance": False,
             }
 
-        role_match: bool = (
-            profile["role_tag"] == required_role
-            and profile["is_governed"] is True
-        )
+        role_match: bool = profile["role_tag"] == required_role and profile["is_governed"] is True
 
         return {
             "authorized": role_match,
             "matched_alias": profile["display_alias"],
             "auth_status": "VERIFIED" if role_match else "CLOSED",
-            "execution_clearance": role_match
+            "execution_clearance": role_match,
         }
 
 

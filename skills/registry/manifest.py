@@ -39,15 +39,11 @@ class SkillManifest:
             raise ValueError("SkillManifest.name must be a non-empty string.")
 
         if self.tier not in VALID_TIERS:
-            raise ValueError(
-                f"SkillManifest.tier must be one of {VALID_TIERS}, got {self.tier!r}."
-            )
+            raise ValueError(f"SkillManifest.tier must be one of {VALID_TIERS}, got {self.tier!r}.")
 
         for permission in self.required_permissions:
             if not isinstance(permission, str) or not permission.strip():
-                raise ValueError(
-                    "Every entry in required_permissions must be a non-empty string."
-                )
+                raise ValueError("Every entry in required_permissions must be a non-empty string.")
 
 
 __all__ = [

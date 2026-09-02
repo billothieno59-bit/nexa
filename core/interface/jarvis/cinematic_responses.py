@@ -23,7 +23,7 @@ class CinematicResponseManager:
             "animation_easing": self.easing,
             "cue_points_ms": [],
             "overlay_text": cleaned_payload,
-            "focus_lock_state": "active_viewport"
+            "focus_lock_state": "active_viewport",
         }
 
 

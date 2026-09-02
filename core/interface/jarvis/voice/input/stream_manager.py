@@ -24,7 +24,7 @@ class VoiceStreamManager:
             "status": "ready",
             "device_id": self._active_stream_id,
             "sample_rate_hz": self.sample_rate,
-            "channels_allocated": self.channels
+            "channels_allocated": self.channels,
         }
 
     def begin_streaming(self) -> bool:

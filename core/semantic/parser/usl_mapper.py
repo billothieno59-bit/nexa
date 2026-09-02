@@ -18,7 +18,7 @@ class UniversalSemanticLayerMapper:
             "mipango": "INTENT_PLANNING_ORCHESTRATION_GET",
             "pesa": "INTENT_RESOURCE_VALUE_TRANSACT",
             "kazi": "INTENT_PROCESS_EXECUTION_RUN",
-            "viatu": "INTENT_IDENTITY_ASSET_QUERY"
+            "viatu": "INTENT_IDENTITY_ASSET_QUERY",
         }
 
     def generate_universal_semantic_token(self, normalized_payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -34,7 +34,7 @@ class UniversalSemanticLayerMapper:
             "resolved_intent_token": resolved_intent,
             "origin_variety_source": normalized_payload.get("source_variety", "unknown_source"),
             "governed_execution_authorized": is_executable,
-            "safety_status": "CLOSED" if not is_executable else "VERIFIED"
+            "safety_status": "CLOSED" if not is_executable else "VERIFIED",
         }
 
 

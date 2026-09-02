@@ -58,10 +58,7 @@ def build_skill_action_handlers(
     `registry`, so every skill becomes reachable as an action in the
     canonical execution HandlerRegistry.
     """
-    return tuple(
-        SkillActionHandler(skill_id, registry)
-        for skill_id in registry.list_skill_ids()
-    )
+    return tuple(SkillActionHandler(skill_id, registry) for skill_id in registry.list_skill_ids())
 
 
 __all__ = [

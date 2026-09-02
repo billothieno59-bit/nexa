@@ -31,14 +31,10 @@ class TextPerceptionCapturer(PerceptionCapturer):
 
     def capture(self, raw_input: object, source: str) -> PerceptionEvent:
         if not isinstance(raw_input, str):
-            raise TypeError(
-                "TextPerceptionCapturer.capture() requires a string raw_input."
-            )
+            raise TypeError("TextPerceptionCapturer.capture() requires a string raw_input.")
 
         if not raw_input.strip():
-            raise ValueError(
-                "TextPerceptionCapturer.capture() received empty text."
-            )
+            raise ValueError("TextPerceptionCapturer.capture() received empty text.")
 
         logger.info("Captured text perception event from source=%s", source)
 

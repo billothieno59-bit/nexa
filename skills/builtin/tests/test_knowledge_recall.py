@@ -15,9 +15,7 @@ def make_populated_registry():
     register_remember(registry, store=store)
     register_recall(registry, store=store)
     gate = SkillAuthorizationGate(registry)
-    remember = gate.get_authorized_handler(
-        "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
-    )
+    remember = gate.get_authorized_handler("knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"}))
     remember(subject="nexa", predicate="is_a", value="operating system")
     return registry, gate
 
@@ -28,9 +26,7 @@ def make_related_registry():
     register_remember(registry, store=store)
     register_recall(registry, store=store)
     gate = SkillAuthorizationGate(registry)
-    remember = gate.get_authorized_handler(
-        "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
-    )
+    remember = gate.get_authorized_handler("knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"}))
     remember(subject="farmer_a", predicate="member_of", value="cooperative_x")
     remember(subject="cooperative_x", predicate="based_in", value="Nairobi")
     return registry, gate

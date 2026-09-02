@@ -85,7 +85,8 @@ class ResourceTransactionHandler(ExecutionActionHandler):
         except (TypeError, ValueError):
             logger.warning(
                 "Stored resource balance for subject=%s resource=%s was not numeric; treating as 0.",
-                subject, resource,
+                subject,
+                resource,
             )
             return 0.0
 
@@ -128,7 +129,10 @@ class ResourceTransactionHandler(ExecutionActionHandler):
 
         logger.info(
             "Resource transaction applied subject=%s resource=%s delta=%s new_balance=%s",
-            subject, resource, delta, new_balance,
+            subject,
+            resource,
+            delta,
+            new_balance,
         )
 
         return {

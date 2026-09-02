@@ -13,7 +13,7 @@ def test_session_ledger_state_commit() -> None:
     """Verifies that conversation frames commit deterministically without operational side effects."""
     mock_history = [
         {"role": "user", "text": "Rada nexa", "timestamp": 1787247200.0},
-        {"role": "assistant", "text": "Hali gani! Nimepokea ujumbe.", "timestamp": 1787247201.0}
+        {"role": "assistant", "text": "Hali gani! Nimepokea ujumbe.", "timestamp": 1787247201.0},
     ]
 
     commit_report = global_session_ledger.commit_session_state("sess_test_u2", mock_history)

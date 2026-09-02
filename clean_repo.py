@@ -2,10 +2,11 @@ import os
 import shutil
 
 # Directories and extensions to remove safely (git folder excluded to protect repo history)
-IGNORE_DIRS = {'__pycache__', '.pytest_cache'}
-IGNORE_EXTS = {'.pyc', '.pyo'}
+IGNORE_DIRS = {"__pycache__", ".pytest_cache"}
+IGNORE_EXTS = {".pyc", ".pyo"}
 
-def purge_transient_files(root_dir='.'):
+
+def purge_transient_files(root_dir="."):
     for current_root, dirs, files in os.walk(root_dir, topdown=False):
         # Remove matching cache files
         for file in files:
@@ -26,6 +27,7 @@ def purge_transient_files(root_dir='.'):
                     print(f"Removed directory: {dir_path}")
                 except Exception as e:
                     print(f"Error removing directory {dir_path}: {e}")
+
 
 if __name__ == "__main__":
     print("Purging build artifacts and transient cache files...")

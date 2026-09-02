@@ -109,9 +109,7 @@ class ExecutionExecutor:
         resolved: list[ExecutionActionHandler | None] = []
 
         for step in plan.steps:
-            resolved.append(
-                self.registry.get_handler(step.action)
-            )
+            resolved.append(self.registry.get_handler(step.action))
 
         return tuple(resolved)
 
@@ -137,9 +135,7 @@ class ExecutionExecutor:
         """
 
         if not isinstance(plan, ExecutionPlan):
-            raise TypeError(
-                "ExecutionExecutor.execute() requires an ExecutionPlan."
-            )
+            raise TypeError("ExecutionExecutor.execute() requires an ExecutionPlan.")
 
         if plan.status == "blocked":
             logger.info(
@@ -174,9 +170,7 @@ class ExecutionExecutor:
 
             for step, handler in zip(plan.steps, handlers):
                 if handler is not None:
-                    logger.info(
-                        "Invoking handler for action=%s", step.action
-                    )
+                    logger.info("Invoking handler for action=%s", step.action)
                     outcome = handler.handle(step)
                     executed.append(step)
                     handler_results[step.action] = outcome
@@ -191,9 +185,7 @@ class ExecutionExecutor:
                     status="executed",
                     plan=plan,
                     executed_steps=tuple(executed),
-                    message=(
-                        "Execution plan executed via registered handlers."
-                    ),
+                    message=("Execution plan executed via registered handlers."),
                     handler_results=handler_results,
                 )
 
@@ -205,10 +197,7 @@ class ExecutionExecutor:
                 status="accepted",
                 plan=plan,
                 executed_steps=(),
-                message=(
-                    "Execution plan accepted. "
-                    "No external action was performed."
-                ),
+                message=("Execution plan accepted. No external action was performed."),
             )
 
         logger.warning(

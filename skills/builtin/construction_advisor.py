@@ -41,8 +41,7 @@ _TOPIC_GUIDANCE: Dict[str, Dict[str, Any]] = {
     "roofing": {
         "common_names": ["roofing", "roof"],
         "summary": (
-            "Roof pitch, material choice, and drainage should account for "
-            "local rainfall intensity and wind conditions."
+            "Roof pitch, material choice, and drainage should account for local rainfall intensity and wind conditions."
         ),
         "key_safety_point": (
             "Roof work is a leading cause of construction falls. Use proper "
@@ -51,13 +50,9 @@ _TOPIC_GUIDANCE: Dict[str, Dict[str, Any]] = {
     },
     "scaffolding": {
         "common_names": ["scaffolding", "scaffold"],
-        "summary": (
-            "Scaffolding must be erected on stable, level ground and "
-            "inspected before each use."
-        ),
+        "summary": ("Scaffolding must be erected on stable, level ground and inspected before each use."),
         "key_safety_point": (
-            "Never exceed the scaffold's rated load capacity, and never "
-            "use damaged or improvised scaffold components."
+            "Never exceed the scaffold's rated load capacity, and never use damaged or improvised scaffold components."
         ),
     },
     "block_work": {

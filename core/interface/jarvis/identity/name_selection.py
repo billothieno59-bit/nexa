@@ -44,9 +44,7 @@ class NameSelectionManager:
                 "success": False,
                 "name": default_identity.assigned_name,
                 "error": (
-                    f"Assistant name must be between "
-                    f"{self.MIN_NAME_LENGTH} and "
-                    f"{self.MAX_NAME_LENGTH} characters."
+                    f"Assistant name must be between {self.MIN_NAME_LENGTH} and {self.MAX_NAME_LENGTH} characters."
                 ),
             }
 
@@ -65,13 +63,9 @@ class NameSelectionManager:
         Restore the default architectural presentation name.
         """
 
-        default_identity.update_identity_name(
-            default_identity.DEFAULT_ARCHITECTURAL_NAME
-        )
+        default_identity.update_identity_name(default_identity.DEFAULT_ARCHITECTURAL_NAME)
 
-        self.selection_history.append(
-            default_identity.DEFAULT_ARCHITECTURAL_NAME
-        )
+        self.selection_history.append(default_identity.DEFAULT_ARCHITECTURAL_NAME)
 
         return default_identity.assigned_name
 

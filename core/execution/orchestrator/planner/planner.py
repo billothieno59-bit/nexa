@@ -1,4 +1,4 @@
-﻿"""
+"""
 NEXA African Operating System
 Execution Planner
 

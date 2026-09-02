@@ -126,11 +126,8 @@ class ExecutionPipeline:
         self.orchestrator = orchestrator or ExecutionOrchestrator()
         self.dispatcher = dispatcher or ExecutionDispatcher()
 
-        self.authorization_policy = (
-            authorization_policy
-            or ExecutionAuthorizationPolicy(
-                allowed_actions=("respond",),
-            )
+        self.authorization_policy = authorization_policy or ExecutionAuthorizationPolicy(
+            allowed_actions=("respond",),
         )
 
         self.executor = executor or ExecutionExecutor()
@@ -157,9 +154,7 @@ class ExecutionPipeline:
         """
 
         if not isinstance(decision, Decision):
-            raise TypeError(
-                "ExecutionPipeline.process() requires a Decision."
-            )
+            raise TypeError("ExecutionPipeline.process() requires a Decision.")
 
         PIPELINE_STATE.reset()  # stage: Decision
 

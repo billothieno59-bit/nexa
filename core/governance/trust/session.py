@@ -40,9 +40,7 @@ def resolve_trust_session(identity_id: str, requested_intent: str) -> TrustSessi
     checks it against the identity manager, and returns a TrustSession
     describing what was actually granted.
     """
-    required_role = (
-        "CONSTITUTIONAL_FOUNDER" if "SYSTEM" in requested_intent else "INTERFACE_NODE"
-    )
+    required_role = "CONSTITUTIONAL_FOUNDER" if "SYSTEM" in requested_intent else "INTERFACE_NODE"
 
     report = global_identity_manager.validate_access_rights(identity_id, required_role)
     authorized = bool(report["authorized"])

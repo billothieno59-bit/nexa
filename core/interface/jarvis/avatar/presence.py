@@ -17,7 +17,7 @@ class AvatarPresenceEngine:
             "neutral": 1.0,
             "smile": 0.0,
             "talking": 0.0,
-            "attentive_listening": 0.0
+            "attentive_listening": 0.0,
         }
 
     def transitional_state_update(self, structural_event: str) -> Dict[str, Any]:
@@ -34,7 +34,4 @@ class AvatarPresenceEngine:
             self.current_state = "ambient_idle"
             self.blendshape_weights = {"neutral": 1.0, "smile": 0.0, "talking": 0.0, "attentive_listening": 0.0}
 
-        return {
-            "engine_state": self.current_state,
-            "active_weights": self.blendshape_weights
-        }
+        return {"engine_state": self.current_state, "active_weights": self.blendshape_weights}

@@ -102,7 +102,5 @@ def test_register_and_capture_image_on_fresh_registry():
 def test_register_and_capture_sensor_on_fresh_registry():
     registry = PerceptionRegistry()
     registry.register(SensorPerceptionCapturer())
-    event = registry.capture(
-        "sensor", {"reading_type": "humidity", "value": 61}, source="sensor_x"
-    )
+    event = registry.capture("sensor", {"reading_type": "humidity", "value": 61}, source="sensor_x")
     assert event.modality == "sensor"

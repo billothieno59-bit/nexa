@@ -26,9 +26,7 @@ class AccessibilityProfileRegistry:
 
     def register(self, profile: AccessibilityProfile) -> None:
         if not isinstance(profile, AccessibilityProfile):
-            raise TypeError(
-                "AccessibilityProfileRegistry.register() requires an AccessibilityProfile."
-            )
+            raise TypeError("AccessibilityProfileRegistry.register() requires an AccessibilityProfile.")
 
         self._profiles[profile.profile_id] = profile
         logger.info("Registered accessibility profile id=%s", profile.profile_id)

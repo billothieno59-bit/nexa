@@ -40,9 +40,7 @@ class SkillRegistry:
             raise TypeError("SkillRegistry.register() requires a SkillManifest.")
 
         if manifest.skill_id in self._manifests:
-            raise DuplicateSkillError(
-                f"Skill '{manifest.skill_id}' is already registered."
-            )
+            raise DuplicateSkillError(f"Skill '{manifest.skill_id}' is already registered.")
 
         if not callable(handler):
             raise TypeError("SkillRegistry.register() requires a callable handler.")

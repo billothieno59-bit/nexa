@@ -34,14 +34,10 @@ class SensorPerceptionCapturer(PerceptionCapturer):
 
     def capture(self, raw_input: object, source: str) -> PerceptionEvent:
         if not isinstance(raw_input, Mapping):
-            raise TypeError(
-                "SensorPerceptionCapturer.capture() requires a mapping raw_input."
-            )
+            raise TypeError("SensorPerceptionCapturer.capture() requires a mapping raw_input.")
 
         if "reading_type" not in raw_input or "value" not in raw_input:
-            raise ValueError(
-                "SensorPerceptionCapturer.capture() requires 'reading_type' and 'value' keys."
-            )
+            raise ValueError("SensorPerceptionCapturer.capture() requires 'reading_type' and 'value' keys.")
 
         logger.info(
             "Captured sensor perception event from source=%s reading_type=%s",

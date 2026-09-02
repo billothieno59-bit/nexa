@@ -23,7 +23,7 @@ class ResponseRenderer:
             "associated_elements": [tag.upper() for tag in element_tags],
             "packaged_body": stripped_content,
             "render_template": "standard_console_grid",
-            "drawn_successfully": True
+            "drawn_successfully": True,
         }
 
 

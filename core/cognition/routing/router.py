@@ -53,12 +53,8 @@ class SemanticRouter:
         try:
             return handler(**kwargs)
         except Exception as exc:
-            logger.exception(
-                "Handler for intent '%s' raised an exception.", intent
-            )
-            raise RouterHandlerError(
-                f"Handler for intent '{intent}' failed: {exc}"
-            ) from exc
+            logger.exception("Handler for intent '%s' raised an exception.", intent)
+            raise RouterHandlerError(f"Handler for intent '{intent}' failed: {exc}") from exc
 
 
 __all__ = [

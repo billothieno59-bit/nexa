@@ -17,20 +17,24 @@ from typing import FrozenSet
 from core.governance.trust.session import TrustSession
 
 ROLE_PERMISSIONS = {
-    "CONSTITUTIONAL_FOUNDER": frozenset({
-        "TEXT.PROCESS",
-        "KERNEL.MANAGE",
-        "SYSTEM.SHUTDOWN",
-        "KNOWLEDGE.WRITE",
-        "KNOWLEDGE.READ",
-        "AI.REASON",
-        "IMAGE.GENERATE",
-        "VOICE.GENERATE",
-    }),
-    "INTERFACE_NODE": frozenset({
-        "TEXT.PROCESS",
-        "KNOWLEDGE.READ",
-    }),
+    "CONSTITUTIONAL_FOUNDER": frozenset(
+        {
+            "TEXT.PROCESS",
+            "KERNEL.MANAGE",
+            "SYSTEM.SHUTDOWN",
+            "KNOWLEDGE.WRITE",
+            "KNOWLEDGE.READ",
+            "AI.REASON",
+            "IMAGE.GENERATE",
+            "VOICE.GENERATE",
+        }
+    ),
+    "INTERFACE_NODE": frozenset(
+        {
+            "TEXT.PROCESS",
+            "KNOWLEDGE.READ",
+        }
+    ),
 }
 
 

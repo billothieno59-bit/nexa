@@ -19,9 +19,7 @@ def test_skill_requires_system_shutdown_permission():
     gate = SkillAuthorizationGate(registry)
 
     assert gate.is_authorized("system.shutdown_nexa", frozenset()) is False
-    assert gate.is_authorized(
-        "system.shutdown_nexa", frozenset({"SYSTEM.SHUTDOWN"})
-    ) is True
+    assert gate.is_authorized("system.shutdown_nexa", frozenset({"SYSTEM.SHUTDOWN"})) is True
 
 
 def test_manifest_is_privileged_tier():
@@ -36,9 +34,7 @@ def test_authorized_caller_still_needs_correct_key(monkeypatch):
     register_privileged_skills(registry)
     gate = SkillAuthorizationGate(registry)
 
-    handler = gate.get_authorized_handler(
-        "system.shutdown_nexa", frozenset({"SYSTEM.SHUTDOWN"})
-    )
+    handler = gate.get_authorized_handler("system.shutdown_nexa", frozenset({"SYSTEM.SHUTDOWN"}))
 
     result = handler("some_key")
     assert result.granted is False

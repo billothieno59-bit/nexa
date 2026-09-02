@@ -19,9 +19,7 @@ def make_registry():
 def test_known_crop_returns_guidance():
     registry = make_registry()
     gate = SkillAuthorizationGate(registry)
-    handler = gate.get_authorized_handler(
-        "agriculture.crop_advisor", frozenset({"TEXT.PROCESS"})
-    )
+    handler = gate.get_authorized_handler("agriculture.crop_advisor", frozenset({"TEXT.PROCESS"}))
 
     result = handler(crop="maize")
     assert result["status"] == "found"
@@ -32,9 +30,7 @@ def test_known_crop_returns_guidance():
 def test_common_name_alias_resolves():
     registry = make_registry()
     gate = SkillAuthorizationGate(registry)
-    handler = gate.get_authorized_handler(
-        "agriculture.crop_advisor", frozenset({"TEXT.PROCESS"})
-    )
+    handler = gate.get_authorized_handler("agriculture.crop_advisor", frozenset({"TEXT.PROCESS"}))
 
     result = handler(crop="corn")
     assert result["status"] == "found"
@@ -44,9 +40,7 @@ def test_common_name_alias_resolves():
 def test_unknown_crop_returns_available_list():
     registry = make_registry()
     gate = SkillAuthorizationGate(registry)
-    handler = gate.get_authorized_handler(
-        "agriculture.crop_advisor", frozenset({"TEXT.PROCESS"})
-    )
+    handler = gate.get_authorized_handler("agriculture.crop_advisor", frozenset({"TEXT.PROCESS"}))
 
     result = handler(crop="dragonfruit")
     assert result["status"] == "not_found"
@@ -56,9 +50,7 @@ def test_unknown_crop_returns_available_list():
 def test_case_insensitive_lookup():
     registry = make_registry()
     gate = SkillAuthorizationGate(registry)
-    handler = gate.get_authorized_handler(
-        "agriculture.crop_advisor", frozenset({"TEXT.PROCESS"})
-    )
+    handler = gate.get_authorized_handler("agriculture.crop_advisor", frozenset({"TEXT.PROCESS"}))
 
     result = handler(crop="MAIZE")
     assert result["status"] == "found"

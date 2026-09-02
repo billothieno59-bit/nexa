@@ -60,9 +60,7 @@ def test_matching_is_case_insensitive_and_whitespace_is_trimmed():
         }
     )
 
-    assert result["resolved_intent_token"] == (
-        "INTENT_RESOURCE_VALUE_TRANSACT"
-    )
+    assert result["resolved_intent_token"] == ("INTENT_RESOURCE_VALUE_TRANSACT")
 
     assert result["governed_execution_authorized"] is True
     assert result["safety_status"] == "VERIFIED"
@@ -80,9 +78,7 @@ def test_unknown_intent_fails_closed():
 
     assert result["usl_version"] == "1.0.0"
 
-    assert result["resolved_intent_token"] == (
-        "INTENT_UNKNOWN_PASSTHROUGH"
-    )
+    assert result["resolved_intent_token"] == ("INTENT_UNKNOWN_PASSTHROUGH")
 
     assert result["origin_variety_source"] == "sw-ke"
 
@@ -100,9 +96,7 @@ def test_empty_target_fails_closed():
         }
     )
 
-    assert result["resolved_intent_token"] == (
-        "INTENT_UNKNOWN_PASSTHROUGH"
-    )
+    assert result["resolved_intent_token"] == ("INTENT_UNKNOWN_PASSTHROUGH")
 
     assert result["governed_execution_authorized"] is False
     assert result["safety_status"] == "CLOSED"
@@ -117,9 +111,7 @@ def test_missing_target_fails_closed():
         }
     )
 
-    assert result["resolved_intent_token"] == (
-        "INTENT_UNKNOWN_PASSTHROUGH"
-    )
+    assert result["resolved_intent_token"] == ("INTENT_UNKNOWN_PASSTHROUGH")
 
     assert result["governed_execution_authorized"] is False
     assert result["safety_status"] == "CLOSED"

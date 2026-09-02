@@ -80,9 +80,7 @@ class SQLiteMemoryAdapter(BaseMemoryAdapter):
 
     def get(self, key: str) -> Optional[Dict[str, Any]]:
         conn = self._get_connection()
-        cursor = conn.execute(
-            "SELECT payload FROM memory_ledger WHERE key = ?", (key,)
-        )
+        cursor = conn.execute("SELECT payload FROM memory_ledger WHERE key = ?", (key,))
         row = cursor.fetchone()
         if row:
             return json.loads(row["payload"])
@@ -90,9 +88,7 @@ class SQLiteMemoryAdapter(BaseMemoryAdapter):
 
     def delete(self, key: str) -> bool:
         conn = self._get_connection()
-        cursor = conn.execute(
-            "DELETE FROM memory_ledger WHERE key = ?", (key,)
-        )
+        cursor = conn.execute("DELETE FROM memory_ledger WHERE key = ?", (key,))
         conn.commit()
         return cursor.rowcount > 0
 

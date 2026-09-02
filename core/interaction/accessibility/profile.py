@@ -36,8 +36,7 @@ class AccessibilityProfile:
         valid_levels = {None, "simple", "standard"}
         if self.preferred_reading_level not in valid_levels:
             raise ValueError(
-                f"preferred_reading_level must be one of {valid_levels}, "
-                f"got {self.preferred_reading_level!r}."
+                f"preferred_reading_level must be one of {valid_levels}, got {self.preferred_reading_level!r}."
             )
 
 

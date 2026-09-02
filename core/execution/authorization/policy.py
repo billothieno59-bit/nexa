@@ -19,6 +19,7 @@ from typing import Any, FrozenSet, Tuple
 @dataclass(frozen=True)
 class AuthorizationResult:
     """Immutable data container tracking authorization decisions and context mapping status."""
+
     status: str
     plan: Any
     message: str
@@ -67,9 +68,7 @@ class ExecutionAuthorizationPolicy:
                 action_name = getattr(step, "action", "")
                 if action_name not in self._allowed_actions:
                     return AuthorizationResult(
-                        status="denied",
-                        plan=plan,
-                        message=f"Action is not authorized: {action_name}"
+                        status="denied", plan=plan, message=f"Action is not authorized: {action_name}"
                     )
             return AuthorizationResult(status="authorized", plan=plan, message="Execution plan is authorized.")
 

@@ -43,8 +43,7 @@ _TENANCY_TOPICS: Dict[str, Dict[str, Any]] = {
             "compared fairly."
         ),
         "notes": (
-            "Keep a copy of the lease and any move-in condition report; "
-            "ask for a written receipt for the deposit."
+            "Keep a copy of the lease and any move-in condition report; ask for a written receipt for the deposit."
         ),
     },
     "notice_period": {
@@ -65,8 +64,7 @@ _TENANCY_TOPICS: Dict[str, Dict[str, Any]] = {
             "required before an increase takes effect at renewal."
         ),
         "notes": (
-            "A fixed-term lease's agreed rent is often protected from "
-            "change until that term ends, per its own wording."
+            "A fixed-term lease's agreed rent is often protected from change until that term ends, per its own wording."
         ),
     },
     "repairs_and_maintenance": {
@@ -79,8 +77,7 @@ _TENANCY_TOPICS: Dict[str, Dict[str, Any]] = {
             "lease itself."
         ),
         "notes": (
-            "Reporting repair needs in writing (even a text message) "
-            "creates a record of when the issue was raised."
+            "Reporting repair needs in writing (even a text message) creates a record of when the issue was raised."
         ),
     },
 }

@@ -32,7 +32,10 @@ def test_rejects_invalid_tier():
 def test_rejects_empty_permission_string():
     with pytest.raises(ValueError):
         SkillManifest(
-            skill_id="x", name="x", description="x", tier="builtin",
+            skill_id="x",
+            name="x",
+            description="x",
+            tier="builtin",
             required_permissions=("",),
         )
 

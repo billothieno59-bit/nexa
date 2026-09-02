@@ -1,4 +1,3 @@
-
 """
 NEXA Africa Operating System
 File: core/execution/orchestrator/orchestrator.py
@@ -50,9 +49,7 @@ class OrchestrationResult:
                 ExecutionPlan(
                     status=self.status,
                     intent=self.intent,
-                    requires_confirmation=(
-                        "confirmation" in self.status
-                    ),
+                    requires_confirmation=("confirmation" in self.status),
                     steps=tuple(self.steps),
                     reason=self.reason,
                 ),
@@ -110,10 +107,7 @@ class ExecutionOrchestrator:
         self,
         policy_engine: Optional[Any] = None,
     ) -> None:
-        self.policy = (
-            policy_engine
-            or global_policy_engine
-        )
+        self.policy = policy_engine or global_policy_engine
 
         self.trust_guard = global_trust_guard
 
@@ -132,48 +126,34 @@ class ExecutionOrchestrator:
         """
 
         if decision is None:
-            raise ValueError(
-                "Cognition decision context cannot be null."
-            )
+            raise ValueError("Cognition decision context cannot be null.")
 
         if isinstance(decision, ExecutionPlan):
             plan = decision
         else:
             plan = self.planner.create_plan(decision)
 
-        reason = (
-            getattr(decision, "reason", "")
-            or plan.reason
-        )
+        reason = getattr(decision, "reason", "") or plan.reason
 
         if plan.status == "blocked":
             return OrchestrationResult(
                 status="blocked",
                 plan=plan,
-                reason=(
-                    reason
-                    or "Blocked by governance."
-                ),
+                reason=(reason or "Blocked by governance."),
             )
 
         if plan.status == "awaiting_confirmation":
             return OrchestrationResult(
                 status="awaiting_confirmation",
                 plan=plan,
-                reason=(
-                    reason
-                    or "Confirmation required."
-                ),
+                reason=(reason or "Confirmation required."),
             )
 
         if plan.status == "ready":
             return OrchestrationResult(
                 status="ready",
                 plan=plan,
-                reason=(
-                    reason
-                    or "No external side effect."
-                ),
+                reason=(reason or "No external side effect."),
             )
 
         return OrchestrationResult(
@@ -208,48 +188,31 @@ class ExecutionOrchestrator:
             return {
                 "success": False,
                 "status": "DENIED_IDENTITY_INVALID",
-                "error": (
-                    f"Caller identity {caller_id} "
-                    "failed authorization constraints."
-                ),
+                "error": (f"Caller identity {caller_id} failed authorization constraints."),
                 "execution_boundary": "CLOSED",
             }
 
-        signature = (
-            self.trust_guard.generate_payload_signature(
-                intent_token
-            )
-        )
+        signature = self.trust_guard.generate_payload_signature(intent_token)
 
-        trust_report = (
-            self.trust_guard.verify_contract_integrity(
-                intent_token,
-                signature,
-            )
+        trust_report = self.trust_guard.verify_contract_integrity(
+            intent_token,
+            signature,
         )
 
         if not trust_report["verified"]:
             return {
                 "success": False,
                 "status": "DENIED_TRUST_CORRUPTED",
-                "error": (
-                    "Contract hash signature "
-                    "verification failure."
-                ),
+                "error": ("Contract hash signature verification failure."),
                 "execution_boundary": "CLOSED",
             }
 
-        plan_report = self.policy.authorize(
-            plan_context
-        )
+        plan_report = self.policy.authorize(plan_context)
 
         if plan_report.status != "authorized":
             return {
                 "success": False,
-                "status": (
-                    "DENIED_PLAN_"
-                    f"{plan_report.status.upper()}"
-                ),
+                "status": (f"DENIED_PLAN_{plan_report.status.upper()}"),
                 "error": plan_report.message,
                 "execution_boundary": "CLOSED",
             }
@@ -257,10 +220,7 @@ class ExecutionOrchestrator:
         return {
             "success": True,
             "status": "PLAN_ORCHESTRATION_AUTHORIZED",
-            "message": (
-                "Execution pipeline authorized "
-                "for dry-run processing."
-            ),
+            "message": ("Execution pipeline authorized for dry-run processing."),
             "execution_boundary": "VERIFIED",
         }
 

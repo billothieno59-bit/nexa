@@ -28,8 +28,7 @@ _TOPIC_GUIDANCE: Dict[str, Dict[str, Any]] = {
     "poultry": {
         "common_names": ["poultry", "chickens", "chicken keeping"],
         "summary": (
-            "Chickens need consistent access to clean water, balanced feed, "
-            "and a predator-proof, well-ventilated coop."
+            "Chickens need consistent access to clean water, balanced feed, and a predator-proof, well-ventilated coop."
         ),
         "key_safety_point": (
             "Sudden drops in egg production or lethargy across multiple birds "
@@ -38,10 +37,7 @@ _TOPIC_GUIDANCE: Dict[str, Dict[str, Any]] = {
     },
     "dairy_cattle": {
         "common_names": ["dairy cattle", "dairy cows", "cattle"],
-        "summary": (
-            "Milk yield depends on consistent feeding schedule, water access, "
-            "and regular milking intervals."
-        ),
+        "summary": ("Milk yield depends on consistent feeding schedule, water access, and regular milking intervals."),
         "key_safety_point": (
             "Mastitis (udder infection) can spread and reduce milk quality — "
             "check for swelling, heat, or abnormal milk regularly."

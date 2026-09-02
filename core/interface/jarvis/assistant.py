@@ -52,5 +52,5 @@ class JarvisInterfaceAssistant:
             "status": "processed",
             "ui_text": ui_display_string,
             "avatar_state": avatar_render["engine_state"],
-            "audio_bytes_generated": audio_payload["buffer_length_bytes"]
+            "audio_bytes_generated": audio_payload["buffer_length_bytes"],
         }

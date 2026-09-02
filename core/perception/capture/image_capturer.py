@@ -30,14 +30,10 @@ class ImagePerceptionCapturer(PerceptionCapturer):
 
     def capture(self, raw_input: object, source: str) -> PerceptionEvent:
         if not isinstance(raw_input, (bytes, bytearray)):
-            raise TypeError(
-                "ImagePerceptionCapturer.capture() requires bytes or bytearray raw_input."
-            )
+            raise TypeError("ImagePerceptionCapturer.capture() requires bytes or bytearray raw_input.")
 
         if len(raw_input) == 0:
-            raise ValueError(
-                "ImagePerceptionCapturer.capture() received empty image data."
-            )
+            raise ValueError("ImagePerceptionCapturer.capture() received empty image data.")
 
         logger.info("Captured image perception event from source=%s", source)
 

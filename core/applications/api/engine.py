@@ -32,10 +32,7 @@ class ApiGatewayEngine:
         dispatcher: Optional[ApiRequestDispatcher] = None,
     ) -> None:
         if not api_key or not isinstance(api_key, str):
-            raise ValueError(
-                "An explicit api_key must be provided. "
-                "No default credential is permitted."
-            )
+            raise ValueError("An explicit api_key must be provided. No default credential is permitted.")
 
         self.api_key = api_key
         self.rate_limiter = rate_limiter or TokenBucketRateLimiter(rate=10.0, capacity=20.0)

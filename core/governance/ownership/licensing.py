@@ -16,10 +16,7 @@ class IntellectualProperty:
 IP = IntellectualProperty(
     project="NEXA Africa Operating System",
     owner=FOUNDER.legal_name,
-    copyright_notice=(
-        "Copyright (c) Bill Odhiambo Othieno. "
-        "All Constitutional Architecture Rights Reserved."
-    ),
+    copyright_notice=("Copyright (c) Bill Odhiambo Othieno. All Constitutional Architecture Rights Reserved."),
     canonical_name="NEXA Africa Operating System",
 )
 

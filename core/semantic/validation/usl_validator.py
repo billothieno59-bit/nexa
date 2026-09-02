@@ -28,10 +28,7 @@ def main():
     representation = load_json(EXAMPLE_PATH)
 
     validator = Draft202012Validator(schema)
-    errors = sorted(
-        validator.iter_errors(representation),
-        key=lambda error: list(error.path)
-    )
+    errors = sorted(validator.iter_errors(representation), key=lambda error: list(error.path))
 
     if errors:
         print("USL representation: INVALID")

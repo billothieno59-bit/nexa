@@ -32,8 +32,7 @@ _CROP_GUIDANCE: Dict[str, Dict[str, Any]] = {
     "maize": {
         "common_names": ["maize", "corn"],
         "typical_planting_season": (
-            "Start of the long rains (varies by region; "
-            "commonly March-May in much of East Africa)"
+            "Start of the long rains (varies by region; commonly March-May in much of East Africa)"
         ),
         "typical_days_to_maturity": "90-150 days depending on variety",
         "notes": "Prefers well-drained soil; avoid waterlogged fields.",

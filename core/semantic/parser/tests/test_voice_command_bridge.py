@@ -15,9 +15,7 @@ def _audio_event(payload=b"\x00\x01"):
 
 
 def test_rejects_non_audio_event():
-    result = resolve_voice_command(
-        PerceptionEvent(modality="text", source="cli", payload="hi", metadata={})
-    )
+    result = resolve_voice_command(PerceptionEvent(modality="text", source="cli", payload="hi", metadata={}))
     assert result["governed_execution_authorized"] is False
     assert result["transcription_status"] == "rejected"
 

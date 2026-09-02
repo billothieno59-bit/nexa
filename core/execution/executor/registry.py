@@ -50,9 +50,7 @@ class HandlerRegistry:
             action_name = handler.action_name
 
             if action_name in registry:
-                raise ValueError(
-                    f"Handler already registered for action: {action_name}"
-                )
+                raise ValueError(f"Handler already registered for action: {action_name}")
 
             registry[action_name] = handler
 
@@ -68,21 +66,15 @@ class HandlerRegistry:
         """
 
         if not isinstance(handler, ExecutionActionHandler):
-            raise TypeError(
-                "HandlerRegistry requires ExecutionActionHandler instances."
-            )
+            raise TypeError("HandlerRegistry requires ExecutionActionHandler instances.")
 
         action_name = handler.action_name
 
         if not isinstance(action_name, str):
-            raise TypeError(
-                "Execution handler action_name must be a string."
-            )
+            raise TypeError("Execution handler action_name must be a string.")
 
         if not action_name.strip():
-            raise ValueError(
-                "Execution handler action_name cannot be empty."
-            )
+            raise ValueError("Execution handler action_name cannot be empty.")
 
     def has_handler(self, action_name: str) -> bool:
         """
@@ -90,9 +82,7 @@ class HandlerRegistry:
         """
 
         if not isinstance(action_name, str):
-            raise TypeError(
-                "action_name must be a string."
-            )
+            raise TypeError("action_name must be a string.")
 
         return action_name in self._handlers
 
@@ -107,9 +97,7 @@ class HandlerRegistry:
         """
 
         if not isinstance(action_name, str):
-            raise TypeError(
-                "action_name must be a string."
-            )
+            raise TypeError("action_name must be a string.")
 
         return self._handlers.get(action_name)
 

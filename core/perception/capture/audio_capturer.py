@@ -31,14 +31,10 @@ class AudioPerceptionCapturer(PerceptionCapturer):
 
     def capture(self, raw_input: object, source: str) -> PerceptionEvent:
         if not isinstance(raw_input, (bytes, bytearray)):
-            raise TypeError(
-                "AudioPerceptionCapturer.capture() requires bytes or bytearray raw_input."
-            )
+            raise TypeError("AudioPerceptionCapturer.capture() requires bytes or bytearray raw_input.")
 
         if len(raw_input) == 0:
-            raise ValueError(
-                "AudioPerceptionCapturer.capture() received empty audio data."
-            )
+            raise ValueError("AudioPerceptionCapturer.capture() received empty audio data.")
 
         logger.info("Captured audio perception event from source=%s", source)
 

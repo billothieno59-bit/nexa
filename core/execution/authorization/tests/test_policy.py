@@ -155,16 +155,12 @@ def test_duplicate_allowed_action_is_rejected():
 def test_invalid_allowed_action_is_rejected():
     with pytest.raises((TypeError, ValueError)):
         ExecutionAuthorizationPolicy(
-            allowed_actions=(
-                123,
-            ),
+            allowed_actions=(123,),
         )
 
 
 def test_empty_allowed_action_is_rejected():
     with pytest.raises(ValueError):
         ExecutionAuthorizationPolicy(
-            allowed_actions=(
-                "",
-            ),
+            allowed_actions=("",),
         )

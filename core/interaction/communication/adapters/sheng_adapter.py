@@ -18,7 +18,7 @@ class ShengTranslationAdapter:
             "form": "mipango",
             "ganji": "pesa",
             "mboka": "kazi",
-            "raba": "viatu"
+            "raba": "viatu",
         }
 
     def normalize_input_phrase(self, raw_phrase: str) -> Dict[str, Any]:
@@ -32,7 +32,7 @@ class ShengTranslationAdapter:
             "raw_token": cleaned_input,
             "normalized_swahili_target": matched_translation,
             "translation_applied": is_mapped,
-            "safety_governance_passed": True
+            "safety_governance_passed": True,
         }
 
 

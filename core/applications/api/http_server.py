@@ -79,12 +79,14 @@ def create_app() -> Flask:
 
         http_status = _http_status_for(result.status)
 
-        return jsonify({
-            "status": result.status,
-            "skill_id": result.skill_id,
-            "message": result.message,
-            "result": result.result,
-        }), http_status
+        return jsonify(
+            {
+                "status": result.status,
+                "skill_id": result.skill_id,
+                "message": result.message,
+                "result": result.result,
+            }
+        ), http_status
 
     @app.get("/")
     def index():

@@ -99,9 +99,7 @@ def test_execution_pipeline_result_is_immutable():
     except Exception:
         pass
     else:
-        raise AssertionError(
-            "ExecutionPipelineResult must be immutable."
-        )
+        raise AssertionError("ExecutionPipelineResult must be immutable.")
 
 
 def test_pipeline_rejects_invalid_decision():
@@ -112,9 +110,7 @@ def test_pipeline_rejects_invalid_decision():
     except TypeError:
         pass
     else:
-        raise AssertionError(
-            "ExecutionPipeline must reject invalid decisions."
-        )
+        raise AssertionError("ExecutionPipeline must reject invalid decisions.")
 
 
 def test_pipeline_preserves_all_stage_results():

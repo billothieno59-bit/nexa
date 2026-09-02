@@ -15,9 +15,7 @@ def test_skill_registers_and_runs_end_to_end():
     register_builtin_skills(registry)
 
     gate = SkillAuthorizationGate(registry)
-    handler = gate.get_authorized_handler(
-        "accessibility.simplify_text", frozenset({"TEXT.PROCESS"})
-    )
+    handler = gate.get_authorized_handler("accessibility.simplify_text", frozenset({"TEXT.PROCESS"}))
 
     result = handler("This is short.")
     assert result == "This is short."

@@ -125,10 +125,7 @@ def test_ready_plan_is_accepted_without_side_effects():
     assert result.status == "accepted"
     assert result.plan == plan
     assert result.executed_steps == ()
-    assert result.message == (
-        "Execution plan accepted. "
-        "No external action was performed."
-    )
+    assert result.message == ("Execution plan accepted. No external action was performed.")
 
 
 def test_unknown_plan_status_fails_closed():
@@ -149,9 +146,7 @@ def test_unknown_plan_status_fails_closed():
 
     assert result.status == "blocked"
     assert result.executed_steps == ()
-    assert result.message == (
-        "Unknown execution state. Failing closed."
-    )
+    assert result.message == ("Unknown execution state. Failing closed.")
 
 
 def test_invalid_input_is_rejected():

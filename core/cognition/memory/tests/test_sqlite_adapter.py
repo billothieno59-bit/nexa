@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 from core.cognition.memory.adapters.sqlite_adapter import SQLiteMemoryAdapter
 
 

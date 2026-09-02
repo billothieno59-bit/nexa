@@ -23,20 +23,16 @@ class InvariantSignatureGuard:
     def verify_contract_integrity(self, content_string: str, provided_signature: str) -> Dict[str, Any]:
         """Validates a payload against a target hash, immediately failing closed if mismatched."""
         if not provided_signature.strip():
-            return {
-                "verified": False,
-                "error": "Empty signature block provided.",
-                "safety_status": "CLOSED"
-            }
+            return {"verified": False, "error": "Empty signature block provided.", "safety_status": "CLOSED"}
 
         calculated_sig = self.generate_payload_signature(content_string)
-        is_valid = (calculated_sig == provided_signature.strip())
+        is_valid = calculated_sig == provided_signature.strip()
 
         return {
             "verified": is_valid,
             "resolved_signature": calculated_sig,
             "safety_status": "VERIFIED" if is_valid else "CLOSED",
-            "action_authorized": is_valid
+            "action_authorized": is_valid,
         }
 
 

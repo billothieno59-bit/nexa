@@ -97,10 +97,7 @@ def register_builtin_skills(registry: SkillRegistry, store: Optional[FactStore] 
         return {
             "status": "found" if facts else "not_found",
             "subject": subject,
-            "facts": [
-                {"predicate": f.predicate, "value": f.value, "provenance": f.provenance}
-                for f in facts
-            ],
+            "facts": [{"predicate": f.predicate, "value": f.value, "provenance": f.provenance} for f in facts],
         }
 
     registry.register(RECALL_FACT_SKILL, _recall_fact_handler)

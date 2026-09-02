@@ -18,9 +18,7 @@ def test_skill_requires_knowledge_write_permission():
     gate = SkillAuthorizationGate(registry)
 
     assert gate.is_authorized("knowledge.remember_fact", frozenset()) is False
-    assert gate.is_authorized(
-        "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
-    ) is True
+    assert gate.is_authorized("knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})) is True
 
 
 def test_skill_stores_fact_end_to_end():
@@ -29,9 +27,7 @@ def test_skill_stores_fact_end_to_end():
     register_builtin_skills(registry, store=store)
     gate = SkillAuthorizationGate(registry)
 
-    handler = gate.get_authorized_handler(
-        "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
-    )
+    handler = gate.get_authorized_handler("knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"}))
     result = handler(subject="nexa", predicate="is_a", value="operating system")
 
     assert result["status"] == "stored"
@@ -53,9 +49,7 @@ def test_default_store_is_used_when_none_injected():
     register_builtin_skills(registry)
     gate = SkillAuthorizationGate(registry)
 
-    handler = gate.get_authorized_handler(
-        "knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"})
-    )
+    handler = gate.get_authorized_handler("knowledge.remember_fact", frozenset({"KNOWLEDGE.WRITE"}))
     result = handler(subject="default_store_smoke_test", predicate="works", value="yes")
     assert result["status"] == "stored"
 

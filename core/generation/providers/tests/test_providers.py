@@ -16,6 +16,7 @@ class _FakeImageClient:
         def generate(**kwargs):
             class R:
                 data = [type("D", (), {"url": "https://fake.example/x.png"})()]
+
             return R()
 
 

@@ -46,9 +46,7 @@ class EmergencyKeyGuard:
         key. Never logs either value.
         """
         if not self.is_configured():
-            logger.warning(
-                "Emergency shutdown key verification attempted but no key is configured."
-            )
+            logger.warning("Emergency shutdown key verification attempted but no key is configured.")
             return False
 
         if not isinstance(provided_key, str):

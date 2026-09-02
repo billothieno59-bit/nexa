@@ -19,10 +19,7 @@ def test_founder_identity_bootstrap_record() -> None:
 def test_custom_profile_registration_and_validation() -> None:
     """Verifies dynamic addition of peripheral operator profiles under strict access controls."""
     global_identity_manager.register_identity_profile(
-        identity_id="operator_test_99",
-        role_tag="INTERFACE_NODE",
-        display_alias="Jarvis Client Link",
-        is_governed=True
+        identity_id="operator_test_99", role_tag="INTERFACE_NODE", display_alias="Jarvis Client Link", is_governed=True
     )
 
     success_check = global_identity_manager.validate_access_rights("operator_test_99", "INTERFACE_NODE")

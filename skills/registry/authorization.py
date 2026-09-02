@@ -77,18 +77,14 @@ class SkillAuthorizationGate:
         actually run.
         """
         if not self.is_authorized(skill_id, granted_permissions):
-            raise SkillAuthorizationError(
-                f"Skill '{skill_id}' is not authorized for the granted permissions."
-            )
+            raise SkillAuthorizationError(f"Skill '{skill_id}' is not authorized for the granted permissions.")
 
         handler = self.registry.get_handler(skill_id)
 
         if handler is None:
             # Should be unreachable if is_authorized passed, but fail
             # closed defensively rather than assume.
-            raise SkillAuthorizationError(
-                f"Skill '{skill_id}' has no registered handler."
-            )
+            raise SkillAuthorizationError(f"Skill '{skill_id}' has no registered handler.")
 
         logger.info("Authorized handler released for skill_id=%s", skill_id)
         return handler

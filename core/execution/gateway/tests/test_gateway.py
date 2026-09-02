@@ -52,9 +52,7 @@ def test_valid_request_is_resolved():
 
     gateway = ExecutionGateway(registry)
 
-    result = gateway.resolve(
-        GatewayRequest(action="respond")
-    )
+    result = gateway.resolve(GatewayRequest(action="respond"))
 
     assert result.status == "resolved"
     assert result.handler is handler
@@ -64,9 +62,7 @@ def test_valid_request_is_resolved():
 def test_unknown_action_is_blocked():
     gateway = ExecutionGateway()
 
-    result = gateway.resolve(
-        GatewayRequest(action="missing_action")
-    )
+    result = gateway.resolve(GatewayRequest(action="missing_action"))
 
     assert result.status == "blocked"
     assert result.handler is None
@@ -85,9 +81,7 @@ def test_invalid_request_is_rejected():
 def test_invalid_action_is_rejected():
     gateway = ExecutionGateway()
 
-    result = gateway.resolve(
-        GatewayRequest(action="")
-    )
+    result = gateway.resolve(GatewayRequest(action=""))
 
     assert result.status == "rejected"
 
@@ -101,9 +95,7 @@ def test_gateway_resolves_handler_from_registry():
 
     gateway = ExecutionGateway(registry)
 
-    result = gateway.resolve(
-        GatewayRequest(action="respond")
-    )
+    result = gateway.resolve(GatewayRequest(action="respond"))
 
     assert result.handler is handler
 
@@ -117,9 +109,7 @@ def test_gateway_never_executes_handlers():
 
     gateway = ExecutionGateway(registry)
 
-    gateway.resolve(
-        GatewayRequest(action="respond")
-    )
+    gateway.resolve(GatewayRequest(action="respond"))
 
     assert handler.executed is False
 
@@ -133,9 +123,7 @@ def test_direct_gateway_execution_is_blocked():
 
     gateway = ExecutionGateway(registry)
 
-    result = gateway.execute(
-        GatewayRequest(action="respond")
-    )
+    result = gateway.execute(GatewayRequest(action="respond"))
 
     assert result.status == "blocked"
     assert handler.executed is False
@@ -152,9 +140,7 @@ def test_gateway_result_is_immutable():
 
     gateway = ExecutionGateway(registry)
 
-    result = gateway.resolve(
-        GatewayRequest(action="respond")
-    )
+    result = gateway.resolve(GatewayRequest(action="respond"))
 
     try:
         result.status = "changed"

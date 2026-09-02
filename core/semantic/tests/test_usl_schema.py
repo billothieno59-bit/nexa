@@ -6,21 +6,9 @@ from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[3]
 
-SCHEMA_PATH = (
-    ROOT
-    / "core"
-    / "semantic"
-    / "schema"
-    / "usl_representation_v1.schema.json"
-)
+SCHEMA_PATH = ROOT / "core" / "semantic" / "schema" / "usl_representation_v1.schema.json"
 
-EXAMPLE_PATH = (
-    ROOT
-    / "core"
-    / "semantic"
-    / "examples"
-    / "generated_usl_example_v1.json"
-)
+EXAMPLE_PATH = ROOT / "core" / "semantic" / "examples" / "generated_usl_example_v1.json"
 
 
 def load_json(path):
@@ -42,6 +30,4 @@ def test_generated_usl_matches_schema():
 
     errors = list(validator.iter_errors(representation))
 
-    assert errors == [], "\n".join(
-        error.message for error in errors
-    )
+    assert errors == [], "\n".join(error.message for error in errors)

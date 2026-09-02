@@ -23,11 +23,7 @@ class ConversationSession:
         if not message_text.strip():
             raise ValueError("Turn message text payloads cannot be whitespace strings.")
 
-        turn_payload = {
-            "role": role,
-            "text": message_text.strip(),
-            "timestamp": time.time()
-        }
+        turn_payload = {"role": role, "text": message_text.strip(), "timestamp": time.time()}
         self.history.append(turn_payload)
         return turn_payload
 
@@ -38,7 +34,7 @@ class ConversationSession:
             "session_id": self.session_id,
             "total_turns": len(self.history),
             "session_duration_sec": round(time.time() - self.start_timestamp, 2),
-            "status": "archived"
+            "status": "archived",
         }
 
     @property

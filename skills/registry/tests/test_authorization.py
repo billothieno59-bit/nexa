@@ -63,9 +63,7 @@ def test_extra_granted_permissions_do_not_matter():
     registry, handler = make_registry_with_skill(required_permissions=("FILES.READ",))
     gate = SkillAuthorizationGate(registry)
 
-    resolved = gate.get_authorized_handler(
-        "translate.sw_en", frozenset({"FILES.READ", "FILES.WRITE", "KERNEL.MANAGE"})
-    )
+    resolved = gate.get_authorized_handler("translate.sw_en", frozenset({"FILES.READ", "FILES.WRITE", "KERNEL.MANAGE"}))
     assert resolved is handler
 
 

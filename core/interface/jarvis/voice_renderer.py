@@ -24,11 +24,8 @@ class VoiceRenderer:
             "status": "rendered",
             "source_text": raw_audio_data["text_processed"],
             "profile_applied": raw_audio_data.get("voice_profile_active", "default_african_first"),
-            "render_parameters": {
-                "configured_pitch": self.pitch,
-                "configured_rate": self.rate
-            },
-            "streamable_ready": True
+            "render_parameters": {"configured_pitch": self.pitch, "configured_rate": self.rate},
+            "streamable_ready": True,
         }
 
 

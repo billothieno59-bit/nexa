@@ -44,9 +44,7 @@ class PerceptionRegistry:
         Register a capturer under its own declared modality.
         """
         if not isinstance(capturer, PerceptionCapturer):
-            raise TypeError(
-                "PerceptionRegistry.register() requires a PerceptionCapturer."
-            )
+            raise TypeError("PerceptionRegistry.register() requires a PerceptionCapturer.")
 
         self._capturers[capturer.modality] = capturer
         logger.info("Registered perception capturer for modality=%s", capturer.modality)
@@ -60,9 +58,7 @@ class PerceptionRegistry:
         capturer = self._capturers.get(modality)
 
         if capturer is None:
-            raise UnknownModalityError(
-                f"No perception capturer registered for modality '{modality}'."
-            )
+            raise UnknownModalityError(f"No perception capturer registered for modality '{modality}'.")
 
         return capturer.capture(raw_input, source)
 

@@ -39,6 +39,7 @@ class ElevenLabsVoiceProvider(VoiceGenerationProvider):
         if not api_key:
             return None
         from elevenlabs.client import ElevenLabs  # imported lazily
+
         return ElevenLabs(api_key=api_key)
 
     def generate(self, text: str) -> Dict[str, Any]:

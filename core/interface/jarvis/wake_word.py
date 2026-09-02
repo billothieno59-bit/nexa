@@ -27,11 +27,11 @@ class WakeWordDetector:
     def analyze_audio_chunk(self, matched_phrase_string: str) -> Dict[str, Any]:
         """Evaluates detected vocal patterns against the established engine activation phrase."""
         input_string = matched_phrase_string.lower().strip()
-        is_triggered = (input_string == self.target_phrase)
+        is_triggered = input_string == self.target_phrase
 
         return {
             "detector_active": self._is_listening,
             "phrase_evaluated": input_string,
             "wake_word_triggered": is_triggered,
-            "action_required": "signal_interface_loop" if is_triggered else "continue_background_listen"
+            "action_required": "signal_interface_loop" if is_triggered else "continue_background_listen",
         }

@@ -38,6 +38,7 @@ class OpenAIImageProvider(ImageGenerationProvider):
         if not api_key:
             return None
         import openai  # imported lazily
+
         return openai.OpenAI(api_key=api_key)
 
     def generate(self, prompt: str, size: str = "1024x1024") -> Dict[str, Any]:

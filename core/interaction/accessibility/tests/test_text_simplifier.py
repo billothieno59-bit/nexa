@@ -13,10 +13,7 @@ def test_short_sentence_is_unchanged():
 
 
 def test_long_sentence_with_commas_is_split():
-    text = (
-        "We went to the market, bought some vegetables, "
-        "talked to a few neighbors, and then walked home together."
-    )
+    text = "We went to the market, bought some vegetables, talked to a few neighbors, and then walked home together."
     result = simplify_for_accessibility(text)
     assert "We went to the market" in result
     assert result.count(".") == 0 or "bought some vegetables" in result

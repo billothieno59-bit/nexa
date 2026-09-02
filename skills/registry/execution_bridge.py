@@ -68,7 +68,8 @@ def invoke_skill(
     if not active_rate_limiter.allow_request(caller_id):
         logger.warning(
             "Skill invocation rate-limited for caller_id=%s skill_id=%s",
-            caller_id, skill_id,
+            caller_id,
+            skill_id,
         )
         return SkillExecutionResult(
             status="rate_limited",
@@ -85,7 +86,9 @@ def invoke_skill(
     except SkillAuthorizationError as exc:
         logger.warning(
             "Skill invocation denied for caller_id=%s skill_id=%s: %s",
-            caller_id, skill_id, exc,
+            caller_id,
+            skill_id,
+            exc,
         )
         return SkillExecutionResult(
             status="denied",
@@ -97,7 +100,9 @@ def invoke_skill(
         result = handler(**kwargs)
     except Exception as exc:
         logger.exception(
-            "Skill handler raised for caller_id=%s skill_id=%s", caller_id, skill_id,
+            "Skill handler raised for caller_id=%s skill_id=%s",
+            caller_id,
+            skill_id,
         )
         return SkillExecutionResult(
             status="error",

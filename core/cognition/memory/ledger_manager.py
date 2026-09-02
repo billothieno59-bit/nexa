@@ -27,7 +27,7 @@ class SessionLedgerManager:
             "session_id": session_id,
             "total_frames_committed": len(history_frames),
             "serialization_format": "JSON_STRING",
-            "checkpoint_persisted": True
+            "checkpoint_persisted": True,
         }
 
     def fetch_serialized_ledger(self, session_id: str) -> Optional[str]:

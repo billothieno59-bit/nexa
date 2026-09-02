@@ -26,5 +26,5 @@ class ConversationalUIRenderer:
             "alert_type": severity.upper(),
             "headline": notification_title.strip().upper(),
             "border_padding_char": "=",
-            "render_width": self.width
+            "render_width": self.width,
         }
