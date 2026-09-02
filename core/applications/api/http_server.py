@@ -48,6 +48,16 @@ from core.interface.api.dashboard import dashboard_status
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
+def _http_status_for(result_status: str) -> int:
+    if result_status == "executed":
+        return 200
+    if result_status == "denied":
+        return 403
+    if result_status == "rate_limited":
+        return 429
+    return 500
+
+
 def create_app() -> Flask:
     app = Flask(__name__)
 
@@ -67,7 +77,7 @@ def create_app() -> Flask:
 
         result = run_web_skill(skill_id, **payload)
 
-        http_status = 200 if result.status == "executed" else 403 if result.status == "denied" else 429 if result.status == "rate_limited" else 500
+        http_status = _http_status_for(result.status)
 
         return jsonify({
             "status": result.status,
