@@ -26,6 +26,8 @@ import skills.builtin.livestock_advisor as livestock_advisor
 import skills.builtin.education_advisor as education_advisor
 import skills.builtin.workforce_advisor as workforce_advisor
 import skills.builtin.entrepreneurship_advisor as entrepreneurship_advisor
+import skills.builtin.financial_literacy_advisor as financial_literacy_advisor
+import skills.builtin.tenancy_rights_advisor as tenancy_rights_advisor
 import skills.privileged.system_shutdown as system_shutdown
 import skills.privileged.ai_reasoning as ai_reasoning
 import skills.privileged.image_generation as image_generation
@@ -48,6 +50,8 @@ def _bootstrap() -> None:
     education_advisor.register_builtin_skills(global_skill_registry)
     workforce_advisor.register_builtin_skills(global_skill_registry)
     entrepreneurship_advisor.register_builtin_skills(global_skill_registry)
+    financial_literacy_advisor.register_builtin_skills(global_skill_registry)
+    tenancy_rights_advisor.register_builtin_skills(global_skill_registry)
     system_shutdown.register_privileged_skills(global_skill_registry)
     ai_reasoning.register_privileged_skills(global_skill_registry)
     image_generation.register_privileged_skills(global_skill_registry)
