@@ -16,6 +16,7 @@ import skills.builtin.accessibility_screen_reader as accessibility_screen_reader
 import skills.builtin.perception_capture as perception_capture
 import skills.builtin.knowledge_remember as knowledge_remember
 import skills.builtin.knowledge_recall as knowledge_recall
+import skills.builtin.resource_check_balance as resource_check_balance
 import skills.builtin.agriculture_advisor as agriculture_advisor
 import skills.builtin.construction_advisor as construction_advisor
 import skills.builtin.electrical_advisor as electrical_advisor
@@ -37,6 +38,7 @@ def _bootstrap() -> None:
     perception_capture.register_builtin_skills(global_skill_registry)
     knowledge_remember.register_builtin_skills(global_skill_registry)
     knowledge_recall.register_builtin_skills(global_skill_registry)
+    resource_check_balance.register_builtin_skills(global_skill_registry)
     agriculture_advisor.register_builtin_skills(global_skill_registry)
     construction_advisor.register_builtin_skills(global_skill_registry)
     electrical_advisor.register_builtin_skills(global_skill_registry)

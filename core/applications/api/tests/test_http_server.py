@@ -45,19 +45,6 @@ def test_post_to_dashboard_route_is_not_allowed(client):
     assert response.status_code == 405
 
 
-def test_no_skill_execution_route_exists(client):
-    """
-    Confirms the server's routes are exactly what's intended — no
-    accidental extra route that could reach invoke_skill() or any
-    privileged skill over the network.
-    """
-    response = client.get("/api/skills/generation.voice")
-    assert response.status_code == 404
-
-    response = client.post("/api/execute")
-    assert response.status_code == 404
-
-
 def test_unknown_route_returns_404(client):
     response = client.get("/api/nonexistent")
     assert response.status_code == 404
@@ -77,3 +64,51 @@ def test_style_route_serves_css(client):
 def test_script_route_serves_js(client):
     response = client.get("/script.js")
     assert response.status_code == 200
+
+
+def test_get_skills_route_excludes_privileged(client):
+    response = client.get("/api/skills")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert "generation.voice" not in data
+    assert "agriculture.crop_advisor" in data
+
+
+def test_post_skill_route_executes_builtin_skill(client):
+    response = client.post(
+        "/api/skills/knowledge.recall_fact",
+        json={"subject": "nexa_http_smoke_test"},
+    )
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["status"] == "executed"
+
+
+def test_post_skill_route_denies_privileged_skill(client):
+    response = client.post(
+        "/api/skills/generation.voice",
+        json={"text": "hello"},
+    )
+    assert response.status_code == 403
+    data = response.get_json()
+    assert data["status"] == "denied"
+
+
+def test_post_skill_route_denies_shutdown(client):
+    response = client.post(
+        "/api/skills/system.shutdown_nexa",
+        json={"provided_key": "anything"},
+    )
+    assert response.status_code == 403
+
+
+def test_post_skill_route_rejects_non_json_body(client):
+    response = client.post(
+        "/api/skills/knowledge.recall_fact",
+        data="not json",
+        content_type="text/plain",
+    )
+    # Flask's silent=True get_json returns None for bad content-type,
+    # which becomes {} — so this actually runs with no kwargs, which
+    # knowledge.recall_fact rejects since subject is required.
+    assert response.status_code in (400, 403, 500)
