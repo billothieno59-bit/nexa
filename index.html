@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEXA — Africa Operating System</title>
+<title>NEXA — One Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -12,6 +12,8 @@
 <body>
 
 <div id="loginScreen">
+  <div class="login-bg" id="loginBg"></div>
+  <div class="login-bg-scrim"></div>
   <div class="login-leaf leaf-tl"></div>
   <div class="login-leaf leaf-br"></div>
 
@@ -24,129 +26,164 @@
   <div class="login-title">Welcome back, <span id="loginName">Bill</span>.</div>
   <div class="login-sub">NEXA is present and ready.</div>
   <div class="login-enter glass-card-hover" id="loginEnter">Enter NEXA</div>
+  <div class="login-location" id="loginLocation">Diani Beach, Kenya</div>
 </div>
 
 <div id="app">
 
-  <header>
+  <header class="topbar">
     <div class="logo">
       <h1><span class="text-gradient">NEXA</span></h1>
-      <p>AFRICA OPERATING SYSTEM</p>
     </div>
+    <nav class="topnav">
+      <span class="topnav-link active">Dashboard</span>
+      <span class="topnav-link">Modules</span>
+      <span class="topnav-link">Knowledge</span>
+      <span class="topnav-link">History</span>
+    </nav>
     <div class="header-right">
-      <div class="search-btn glass-card-hover">Search</div>
-      <div class="time" id="clock">09:42</div>
       <div class="profile glass-card-hover">Bill</div>
     </div>
   </header>
 
-  <div class="main-grid">
+  <div class="shell">
 
-    <aside class="sidebar">
-      <div class="glass-card wood-accent">
-        <div class="skills-section">
-          <h3>Builtin Skills</h3>
-          <div class="skill-list">
-            <span class="skill-chip">Agriculture Advisor</span>
-            <span class="skill-chip">Construction Advisor</span>
-            <span class="skill-chip">Education Advisor</span>
-            <span class="skill-chip">Electrical Advisor</span>
-            <span class="skill-chip">Entrepreneurship Advisor</span>
-            <span class="skill-chip">Workforce Advisor</span>
-            <span class="skill-chip">Livestock Advisor</span>
-            <span class="skill-chip">Solar Advisor</span>
-            <span class="skill-chip">Water Systems Advisor</span>
-            <span class="skill-chip">Knowledge Remember</span>
-            <span class="skill-chip">Knowledge Recall</span>
-            <span class="skill-chip">Accessibility</span>
-          </div>
-        </div>
-        <div class="skills-section privileged">
-          <h3>Privileged Skills</h3>
-          <div class="skill-list">
-            <span class="skill-chip privileged-chip">AI Reasoning</span>
-            <span class="skill-chip privileged-chip">Image Generation</span>
-            <span class="skill-chip privileged-chip">Voice Generation</span>
-            <span class="skill-chip privileged-chip">System Shutdown</span>
-          </div>
-        </div>
+    <aside class="rail">
+      <div class="rail-item active" data-view="home" title="Home">
+        <span class="rail-icon">&#8962;</span>
+        <span class="rail-label">Home</span>
+      </div>
+      <div class="rail-item" data-view="home" title="Chat">
+        <span class="rail-icon">&#128172;</span>
+        <span class="rail-label">Chat</span>
+      </div>
+      <div class="rail-item" data-view="skills" title="Skills">
+        <span class="rail-icon">&#9889;</span>
+        <span class="rail-label">Skills</span>
+      </div>
+      <div class="rail-item" data-view="home" title="Knowledge">
+        <span class="rail-icon">&#128218;</span>
+        <span class="rail-label">Knowledge</span>
+      </div>
+      <div class="rail-item" data-view="home" title="History">
+        <span class="rail-icon">&#8635;</span>
+        <span class="rail-label">History</span>
+      </div>
+      <div class="rail-spacer"></div>
+      <div class="rail-item" data-view="home" title="Settings">
+        <span class="rail-icon">&#9881;</span>
+        <span class="rail-label">Settings</span>
       </div>
     </aside>
 
-    <main class="main-content">
+    <main class="workspace">
 
-      <div class="orb-row">
-        <div class="orb-container">
-          <div class="jarvis-orb" id="jarvisOrb">
-            <div class="orb-rings">
-              <div class="orb-ring ring-1"></div>
-              <div class="orb-ring ring-2"></div>
-              <div class="orb-ring ring-3"></div>
-            </div>
-            <div class="orb-core"></div>
-          </div>
-          <div class="orb-state-label" id="orbStateLabel">Idle</div>
-          <div class="orb-hint" id="orbHint">Mint pulse — Jarvis is present, listening for nothing in particular.</div>
+      <div class="search-row">
+        <div class="search-bar">
+          <span class="search-icon">&#128269;</span>
+          <span class="search-placeholder">Ask NEXA anything…</span>
         </div>
-
-        <div class="intelligence-card glass-card wood-accent">
-          <h2>Today's Focus</h2>
-          <div class="focus-item">
-            <span class="focus-dot dot-emerald"></span>
-            <div>
-              <div class="focus-title">Provider abstraction complete</div>
-              <div class="focus-sub">Reasoning, image, and voice each route through a real interface, not a hardcoded vendor.</div>
-            </div>
-          </div>
-          <div class="focus-item">
-            <span class="focus-dot dot-cyan"></span>
-            <div>
-              <div class="focus-title">Full builtin skills catalog</div>
-              <div class="focus-sub">12 builtin skills covering the canonical catalog, all permission-gated.</div>
-            </div>
-          </div>
-          <div class="focus-item">
-            <span class="focus-dot dot-gold"></span>
-            <div>
-              <div class="focus-title">Funded-tier roadmap defined</div>
-              <div class="focus-sub">Local model training is a separate, deliberate future phase — not claimed as done.</div>
-            </div>
-          </div>
-        </div>
+        <div class="time-chip" id="clock">09:42</div>
       </div>
 
-      <div class="glass-card wood-accent">
-        <h2 class="pipeline-title">Execution Pipeline</h2>
-        <div class="pipeline" id="pipeline">
-          <div class="pipeline-stage" data-stage="0"><span>Decision</span><div class="stage-dot"></div></div>
-          <div class="pipeline-arrow">&#8594;</div>
-          <div class="pipeline-stage" data-stage="1"><span>Planner</span><div class="stage-dot"></div></div>
-          <div class="pipeline-arrow">&#8594;</div>
-          <div class="pipeline-stage" data-stage="2"><span>Orchestrator</span><div class="stage-dot"></div></div>
-          <div class="pipeline-arrow">&#8594;</div>
-          <div class="pipeline-stage" data-stage="3"><span>Dispatcher</span><div class="stage-dot"></div></div>
-          <div class="pipeline-arrow">&#8594;</div>
-          <div class="pipeline-stage" data-stage="4"><span>Authorization</span><div class="stage-dot"></div></div>
-          <div class="pipeline-arrow">&#8594;</div>
-          <div class="pipeline-stage" data-stage="5"><span>Executor</span><div class="stage-dot"></div></div>
+      <div id="viewHome">
+
+        <div class="hero-card glass-card wood-accent hero-with-photo">
+          <div class="hero-bg-photo"></div>
+          <div class="hero-orb-wrap">
+            <div class="jarvis-orb" id="jarvisOrb">
+              <div class="orb-rings">
+                <div class="orb-ring ring-1"></div>
+                <div class="orb-ring ring-2"></div>
+                <div class="orb-ring ring-3"></div>
+              </div>
+              <div class="orb-core"></div>
+            </div>
+          </div>
+          <div class="hero-text">
+            <h2>One Intelligence.</h2>
+            <p class="hero-sub">The essential gateway to many possibilities.</p>
+            <div class="orb-state-label" id="orbStateLabel">Idle</div>
+            <div class="orb-hint" id="orbHint">Mint pulse — Jarvis is present, listening for nothing in particular.</div>
+          </div>
         </div>
+
+        <div class="module-grid">
+          <div class="module-card" data-skill="agriculture.crop_advisor">
+            <div class="module-icon leaf">&#127793;</div>
+            <div class="module-title">Agriculture</div>
+            <div class="module-sub">Sustainable food systems</div>
+          </div>
+          <div class="module-card" data-skill="education.study_advisor">
+            <div class="module-icon book">&#128218;</div>
+            <div class="module-title">Education</div>
+            <div class="module-sub">Skills for a brighter future</div>
+          </div>
+          <div class="module-card" data-skill="entrepreneurship.reference_advisor">
+            <div class="module-icon bulb">&#128161;</div>
+            <div class="module-title">Innovation</div>
+            <div class="module-sub">Ideas into impact</div>
+          </div>
+          <div class="module-card" data-view="skills">
+            <div class="module-icon globe">&#127760;</div>
+            <div class="module-title">Africa</div>
+            <div class="module-sub">One people, many possibilities</div>
+          </div>
+        </div>
+
+        <div class="glass-card wood-accent">
+          <h2 class="pipeline-title">Execution Pipeline</h2>
+          <div class="pipeline" id="pipeline">
+            <div class="pipeline-stage" data-stage="0"><span>Decision</span><div class="stage-dot"></div></div>
+            <div class="pipeline-arrow">&#8594;</div>
+            <div class="pipeline-stage" data-stage="1"><span>Planner</span><div class="stage-dot"></div></div>
+            <div class="pipeline-arrow">&#8594;</div>
+            <div class="pipeline-stage" data-stage="2"><span>Orchestrator</span><div class="stage-dot"></div></div>
+            <div class="pipeline-arrow">&#8594;</div>
+            <div class="pipeline-stage" data-stage="3"><span>Dispatcher</span><div class="stage-dot"></div></div>
+            <div class="pipeline-arrow">&#8594;</div>
+            <div class="pipeline-stage" data-stage="4"><span>Authorization</span><div class="stage-dot"></div></div>
+            <div class="pipeline-arrow">&#8594;</div>
+            <div class="pipeline-stage" data-stage="5"><span>Executor</span><div class="stage-dot"></div></div>
+          </div>
+        </div>
+
+        <div class="glass-card wood-accent">
+          <div class="status-header">
+            <h2 class="status-title">System Status</h2>
+            <span class="status-pass" id="statusPass">Loading…</span>
+          </div>
+          <div class="status-grid">
+            <div class="status-item"><span class="status-dot green"></span>Cognition</div>
+            <div class="status-item"><span class="status-dot green"></span>Memory</div>
+            <div class="status-item"><span class="status-dot green"></span>Knowledge</div>
+            <div class="status-item"><span class="status-dot green"></span>Execution</div>
+            <div class="status-item"><span class="status-dot green"></span>Governance</div>
+            <div class="status-item"><span class="status-dot green"></span>Identity</div>
+            <div class="status-item"><span class="status-dot green"></span>Perception</div>
+          </div>
+          <div class="status-footer" id="statusFooter">Connecting to /api/dashboard…</div>
+        </div>
+
       </div>
 
-      <div class="glass-card wood-accent">
-        <div class="status-header">
-          <h2 class="status-title">System Status</h2>
-          <span class="status-pass" id="statusPass">Loading…</span>
+      <div id="viewSkills" class="hidden-view">
+        <div class="glass-card wood-accent">
+          <h2 class="pipeline-title">Skills</h2>
+          <p class="hero-sub" style="margin-bottom:16px;">Only builtin skills are reachable here — privileged skills (voice, image, reasoning, shutdown) require founder access and are not exposed to the web client.</p>
+          <div id="skillsList" class="skills-run-list">Loading…</div>
         </div>
-        <div class="status-grid">
-          <div class="status-item"><span class="status-dot green"></span>Cognition</div>
-          <div class="status-item"><span class="status-dot green"></span>Memory</div>
-          <div class="status-item"><span class="status-dot green"></span>Knowledge</div>
-          <div class="status-item"><span class="status-dot green"></span>Execution</div>
-          <div class="status-item"><span class="status-dot green"></span>Governance</div>
-          <div class="status-item"><span class="status-dot green"></span>Identity</div>
-          <div class="status-item"><span class="status-dot green"></span>Perception</div>
+
+        <div class="glass-card wood-accent" id="skillRunCard" style="display:none;">
+          <h2 class="pipeline-title" id="skillRunTitle">Run skill</h2>
+          <p class="hero-sub" id="skillRunDescription"></p>
+          <textarea id="skillRunParams" class="skill-params-input" placeholder='{"subject": "example"}'></textarea>
+          <div class="skill-run-actions">
+            <div class="glass-card-hover" id="skillRunButton" style="cursor:pointer;">Run</div>
+            <div class="glass-card-hover" id="skillRunCancel" style="cursor:pointer;">Cancel</div>
+          </div>
+          <pre id="skillRunResult" class="skill-run-result"></pre>
         </div>
-        <div class="status-footer" id="statusFooter">Connecting to /api/dashboard…</div>
       </div>
 
     </main>

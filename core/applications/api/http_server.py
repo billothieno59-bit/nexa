@@ -19,12 +19,19 @@ Description: Minimal, deliberately narrow HTTP server.
              - GET /, /style.css, /script.js — serves the static
                frontend files (project root index.html, style.css,
                script.js).
+             - GET /assets/<filename> — serves image files from
+               web/assets/ only (login/hero background photography).
+               Uses Flask's send_from_directory, which resolves the
+               requested path and rejects anything that escapes
+               web/assets/ — a filename like "../../CONSTITUTION.md"
+               404s rather than serving a file outside that one
+               folder. Not a general static mount.
 
              Scope, on purpose:
              - No API keys, secrets, or env var values are ever placed
                in a response body.
-             - Only three specific static files are served, by
-               explicit route — not a broad static folder mount.
+             - Only three specific static files, plus one narrow
+               image folder, are served — not a broad static mount.
              - CORS is not configured. Same-origin only.
              - No authentication exists on this server at all. It is
                intended for local, same-machine use only. Do not
@@ -37,7 +44,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, send_file, send_from_directory
 
 from core.applications.api.web_skill_gateway import (
     list_web_reachable_skills,
@@ -46,6 +53,7 @@ from core.applications.api.web_skill_gateway import (
 from core.interface.api.dashboard import dashboard_status
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
+WEB_ASSETS_DIR = PROJECT_ROOT / "web" / "assets"
 
 
 def _http_status_for(result_status: str) -> int:
@@ -99,6 +107,10 @@ def create_app() -> Flask:
     @app.get("/script.js")
     def script():
         return send_file(PROJECT_ROOT / "script.js")
+
+    @app.get("/assets/<filename>")
+    def web_asset(filename: str):
+        return send_from_directory(WEB_ASSETS_DIR, filename)
 
     return app
 

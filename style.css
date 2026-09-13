@@ -13,6 +13,7 @@
   --text-dim: #A8B5AE;
   --border-glow: rgba(34, 211, 166, 0.16);
   --radius: 18px;
+  --shadow-lift: 0 8px 24px rgba(0,0,0,0.35), 0 2px 6px rgba(0,0,0,0.25);
 }
 
 html, body {
@@ -27,18 +28,28 @@ html, body {
   position: fixed; inset: 0; z-index: 100;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 100%, rgba(198,138,43,0.22) 0%, transparent 60%),
-    radial-gradient(ellipse at 18% -8%, #0F2A25 0%, var(--bg) 60%);
+  background: var(--bg);
   text-align: center;
   transition: opacity 600ms ease, visibility 600ms ease;
 }
 #loginScreen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-/* Tropical leaves — realistic monstera silhouette (split-leaf shape),
-   one top-left, one bottom-right, never cluttered */
+/* Real photography, rotated by script.js */
+.login-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center;
+  opacity: 1;
+  transition: opacity 900ms ease;
+}
+.login-bg-scrim {
+  position: absolute; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(198,138,43,0.18) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(7,19,31,0.72) 0%, rgba(7,19,31,0.85) 100%);
+}
+
 .login-leaf {
-  position: absolute;
+  position: absolute; z-index: 2;
   width: 380px; height: 380px;
   background-repeat: no-repeat;
   background-size: contain;
@@ -68,7 +79,7 @@ html, body {
 }
 
 .login-orb {
-  position: relative; width: 220px; height: 220px; margin-bottom: 32px;
+  position: relative; z-index: 2; width: 220px; height: 220px; margin-bottom: 32px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 32% 26%, rgba(255,255,255,0.55) 0%, transparent 8%),
@@ -81,7 +92,6 @@ html, body {
     inset 0 0 8px rgba(255,255,255,0.15);
   overflow: hidden;
   animation: loginPulse 4.5s ease-in-out infinite;
-  z-index: 1;
 }
 
 .login-orb-swirl {
@@ -121,18 +131,24 @@ html, body {
 @keyframes swirlSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .login-title {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   font-family: 'Fraunces', serif; font-optical-sizing: auto; font-size: 26px; font-weight: 600;
   margin-bottom: 8px;
 }
 .login-sub {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   font-size: 13px; color: var(--text-dim); margin-bottom: 30px;
   letter-spacing: 0.3px;
 }
 .login-enter {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   padding: 11px 26px; font-size: 13px;
+}
+.login-location {
+  position: absolute; z-index: 2; bottom: 24px; right: 28px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: rgba(245,247,244,0.75); letter-spacing: 0.4px;
+  transition: opacity 900ms ease;
 }
 
 /* ---------- App Shell ---------- */
@@ -174,7 +190,7 @@ header {
 }
 @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
 
-/* ---------- Glass Card + Subtle African Pattern ---------- */
+/* ---------- Glass Card + Subtle African Pattern + Real Depth ---------- */
 .glass-card {
   position: relative;
   background: var(--surface-glass);
@@ -183,7 +199,8 @@ header {
   padding: 20px 22px;
   backdrop-filter: blur(14px);
   margin-bottom: 18px;
-  transition: border-color 180ms ease;
+  box-shadow: var(--shadow-lift);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
   overflow: hidden;
 }
 .glass-card::before {
@@ -196,11 +213,11 @@ header {
   background-size: 60px 60px;
 }
 .glass-card > * { position: relative; z-index: 1; }
-.glass-card:hover { border-color: rgba(34,211,166,0.32); }
+.glass-card:hover {
+  border-color: rgba(34,211,166,0.32);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 3px 8px rgba(0,0,0,0.3);
+}
 
-/* Walnut wood-grain accent strip — thin left border with a subtle
-   grain texture, per the "dark wood instead of metallic gray" and
-   "thin separators, shelves, and cards" reference images */
 .glass-card.wood-accent::after {
   content: "";
   position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
@@ -213,6 +230,17 @@ header {
       var(--walnut-dark) 7px
     );
   opacity: 0.55;
+}
+
+.hero-with-photo .hero-bg-photo {
+  position: absolute; inset: 0; z-index: 0;
+  background-image: url('/assets/mount-kenya-sunset.jpg');
+  background-size: cover; background-position: center;
+}
+.hero-with-photo .hero-bg-photo::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(7,19,31,0.88) 0%, rgba(7,19,31,0.55) 55%, rgba(7,19,31,0.35) 100%);
 }
 
 .sidebar .glass-card { margin-bottom: 0; }
@@ -243,6 +271,7 @@ header {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; background: var(--surface-glass); border: 1px solid var(--border-glow);
   border-radius: var(--radius); padding: 24px; backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-lift);
 }
 
 .jarvis-orb { position: relative; width: 130px; height: 130px; margin-bottom: 14px; cursor: pointer; }
@@ -319,8 +348,6 @@ header {
 .memory-item { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 12.5px; }
 .memory-item:last-child { border-bottom: none; }
 
-/* Single decorative plant — right panel only, per "one or two plants,
-   never cluttered" / "don't decorate every screen" guidance */
 .plant-accent {
   width: 100%; height: 140px;
   background-repeat: no-repeat;
@@ -337,4 +364,138 @@ footer { margin-top: 28px; }
 
 @media (prefers-reduced-motion: reduce) {
   .orb-core, .ring-2, .ring-3, .login-orb, .login-orb-swirl, .login-leaf { animation: none; }
+}
+
+/* ---------- Sidebar-nav dashboard layout ---------- */
+
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; padding: 16px 24px; flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.topnav { display: flex; gap: 28px; }
+.topnav-link {
+  font-size: 13.5px; color: var(--text-dim); cursor: pointer;
+  transition: color 180ms ease;
+}
+.topnav-link.active { color: var(--emerald); }
+.topnav-link:hover { color: var(--text); }
+
+.shell {
+  display: grid;
+  grid-template-columns: 84px 1fr 280px;
+  gap: 18px;
+  max-width: 1280px; margin: 0 auto;
+  padding: 24px 24px 60px;
+}
+@media (max-width: 1100px) {
+  .shell { grid-template-columns: 84px 1fr; }
+  .right-panel { display: none; }
+}
+
+.rail {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 20px 8px;
+  background: var(--surface-glass); border: 1px solid var(--border-glow);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lift);
+}
+.rail-spacer { flex: 1; }
+.rail-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 10px 6px; border-radius: 12px; width: 100%;
+  cursor: pointer; color: var(--text-dim);
+  transition: background 180ms ease, color 180ms ease;
+}
+.rail-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.rail-item.active { background: rgba(34,211,166,0.14); color: var(--emerald); }
+.rail-icon { font-size: 18px; }
+.rail-label { font-size: 9.5px; letter-spacing: 0.3px; }
+
+.workspace { min-width: 0; }
+
+.search-row {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+}
+.search-bar {
+  flex: 1; display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px; border-radius: 999px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-dim); font-size: 13px;
+}
+.search-icon { font-size: 13px; opacity: 0.7; }
+.time-chip {
+  font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+  padding: 10px 16px; border-radius: 999px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text);
+}
+
+.hero-card {
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  padding: 28px;
+}
+.hero-orb-wrap { flex-shrink: 0; }
+.hero-orb-wrap .jarvis-orb { width: 110px; height: 110px; margin-bottom: 0; }
+.hero-text h2 {
+  font-family: 'Fraunces', serif; font-optical-sizing: auto;
+  font-size: 26px; font-weight: 600; margin-bottom: 4px;
+}
+.hero-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+
+.module-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  margin-bottom: 18px;
+}
+@media (max-width: 900px) { .module-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.module-card {
+  padding: 18px; border-radius: var(--radius);
+  background: var(--surface-glass); border: 1px solid var(--border-glow);
+  box-shadow: var(--shadow-lift);
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  cursor: pointer;
+}
+.module-card:hover {
+  border-color: rgba(34,211,166,0.35); transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 3px 8px rgba(0,0,0,0.3);
+}
+.module-icon { font-size: 22px; margin-bottom: 10px; }
+.module-title {
+  font-family: 'Fraunces', serif; font-optical-sizing: auto;
+  font-size: 14.5px; font-weight: 600; margin-bottom: 3px;
+}
+.module-sub { font-size: 11.5px; color: var(--text-dim); }
+
+/* ---------- Skills panel ---------- */
+
+.hidden-view { display: none; }
+
+.skills-run-list { display: flex; flex-direction: column; gap: 8px; }
+
+.skill-run-item {
+  padding: 12px 14px; border-radius: 12px; cursor: pointer;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  display: flex; flex-direction: column; gap: 3px;
+  transition: border-color 180ms ease;
+}
+.skill-run-item:hover { border-color: rgba(34,211,166,0.35); }
+.skill-run-item-desc { font-size: 11.5px; color: var(--text-dim); }
+
+.skill-params-input {
+  width: 100%; min-height: 90px; margin-top: 12px; padding: 12px;
+  border-radius: 12px; background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08); color: var(--text);
+  font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+  resize: vertical;
+}
+
+.skill-run-actions { display: flex; gap: 10px; margin-top: 12px; }
+
+.skill-run-result {
+  margin-top: 14px; padding: 12px; border-radius: 12px;
+  background: rgba(0,0,0,0.25); font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px; white-space: pre-wrap; word-break: break-word;
+  max-height: 240px; overflow-y: auto;
 }

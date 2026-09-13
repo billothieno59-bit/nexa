@@ -1,3 +1,41 @@
+// Login screen background — rotates through real photography, with
+// a matching location caption. Single element + JS crossfade rather
+// than 5 stacked CSS keyframe animations, so photo and caption always
+// stay in sync, and it's trivial to disable under prefers-reduced-motion.
+const loginBg = document.getElementById('loginBg');
+const loginLocation = document.getElementById('loginLocation');
+const backgroundScenes = [
+  { file: 'diani-beach-resort.jpg', caption: 'Diani Beach, Kenya' },
+  { file: 'mount-kenya-sunset.jpg', caption: 'Mount Kenya, Kenya' },
+  { file: 'lamu-lagoon-island.jpg', caption: 'Lamu, Kenya' },
+  { file: 'maasai-mara-acacia-sunset.jpg', caption: 'Maasai Mara, Kenya' },
+  { file: 'street-mural-portrait.jpg', caption: 'Street Art, South Africa' },
+];
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let bgIndex = 0;
+
+function applyBackgroundScene(index) {
+  const scene = backgroundScenes[index];
+  loginBg.style.backgroundImage = `url('/assets/${scene.file}')`;
+  loginLocation.textContent = scene.caption;
+}
+
+applyBackgroundScene(0);
+
+if (!prefersReducedMotion) {
+  setInterval(function () {
+    bgIndex = (bgIndex + 1) % backgroundScenes.length;
+    loginBg.style.opacity = '0';
+    loginLocation.style.opacity = '0';
+    setTimeout(function () {
+      applyBackgroundScene(bgIndex);
+      loginBg.style.opacity = '1';
+      loginLocation.style.opacity = '1';
+    }, 900);
+  }, 8000);
+}
+
 // Login screen — click Enter or press any key to dismiss.
 const loginScreen = document.getElementById('loginScreen');
 const loginEnter = document.getElementById('loginEnter');
@@ -13,7 +51,6 @@ document.addEventListener('keydown', dismissLogin);
 // Jarvis Orb — four real states from the design brief.
 const orb = document.getElementById('jarvisOrb');
 const orbCore = orb.querySelector('.orb-core');
-const orbRing = orb.querySelector('.ring-1') || orb.querySelectorAll('.orb-ring')[0];
 const stateLabel = document.getElementById('orbStateLabel');
 const orbHint = document.getElementById('orbHint');
 
@@ -47,7 +84,7 @@ orb.addEventListener('click', function () {
   applyOrbState(orbIndex);
 });
 
-// Real clock, no fabricated data anywhere else on this page.
+// Real clock.
 function updateTime() {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, '0');
@@ -59,10 +96,6 @@ updateTime();
 setInterval(updateTime, 30000);
 
 // --- Live backend data via GET /api/dashboard ---
-// Same route this static page can now reach when served by
-// core/applications/api/http_server.py (same-origin). Replaces the
-// previously hardcoded provider "Connected" labels, the fake test-count
-// claim, and the animated (not real) pipeline stage cycling.
 
 const pipelineStages = document.querySelectorAll('.pipeline-stage');
 
@@ -74,7 +107,7 @@ function applyPipelineStage(currentIndex) {
   });
 }
 
-function applyProviderStatus(providerKey, elementIdSuffix) {
+function applyProviderStatus(elementIdSuffix) {
   return function (status) {
     const dot = document.getElementById('dot' + elementIdSuffix);
     const label = document.getElementById('status' + elementIdSuffix);
@@ -109,9 +142,9 @@ async function refreshDashboard() {
     `${skills.builtin ?? '—'} Builtin \u00b7 ${skills.privileged ?? '—'} Privileged`;
 
   const providers = data.providers || {};
-  applyProviderStatus('anthropic', 'Anthropic')(providers.anthropic);
-  applyProviderStatus('openai', 'Openai')(providers.openai);
-  applyProviderStatus('elevenlabs', 'Elevenlabs')(providers.elevenlabs);
+  applyProviderStatus('Anthropic')(providers.anthropic);
+  applyProviderStatus('Openai')(providers.openai);
+  applyProviderStatus('Elevenlabs')(providers.elevenlabs);
 
   const pipeline = data.pipeline || {};
   if (typeof pipeline.current_index === 'number') {
@@ -121,3 +154,132 @@ async function refreshDashboard() {
 
 refreshDashboard();
 setInterval(refreshDashboard, 5000);
+
+// --- Rail navigation: switch between Home and Skills views ---
+
+const railItems = document.querySelectorAll('.rail-item');
+const viewHome = document.getElementById('viewHome');
+const viewSkills = document.getElementById('viewSkills');
+
+function showView(viewName) {
+  railItems.forEach(item => item.classList.toggle('active', item.dataset.view === viewName));
+  viewHome.classList.toggle('hidden-view', viewName !== 'home');
+  viewSkills.classList.toggle('hidden-view', viewName !== 'skills');
+
+  if (viewName === 'skills') {
+    loadSkillsList();
+  }
+}
+
+railItems.forEach(item => {
+  item.addEventListener('click', () => showView(item.dataset.view));
+});
+
+// --- Skills panel: fetch GET /api/skills, run one via POST /api/skills/<id> ---
+
+const skillsListEl = document.getElementById('skillsList');
+const skillRunCard = document.getElementById('skillRunCard');
+const skillRunTitle = document.getElementById('skillRunTitle');
+const skillRunDescription = document.getElementById('skillRunDescription');
+const skillRunParams = document.getElementById('skillRunParams');
+const skillRunButton = document.getElementById('skillRunButton');
+const skillRunCancel = document.getElementById('skillRunCancel');
+const skillRunResult = document.getElementById('skillRunResult');
+
+let selectedSkillId = null;
+
+async function loadSkillsList() {
+  skillsListEl.textContent = 'Loading…';
+  try {
+    const response = await fetch('/api/skills');
+    if (!response.ok) throw new Error('Skills request failed: ' + response.status);
+    const skills = await response.json();
+
+    skillsListEl.innerHTML = '';
+    const skillIds = Object.keys(skills).sort();
+
+    if (skillIds.length === 0) {
+      skillsListEl.textContent = 'No skills available.';
+      return;
+    }
+
+    skillIds.forEach(skillId => {
+      const row = document.createElement('div');
+      row.className = 'skill-run-item';
+      row.innerHTML = `<strong>${skillId}</strong><span class="skill-run-item-desc">${skills[skillId]}</span>`;
+      row.addEventListener('click', () => openSkillRunCard(skillId, skills[skillId]));
+      skillsListEl.appendChild(row);
+    });
+  } catch (err) {
+    skillsListEl.textContent = 'Could not reach /api/skills.';
+  }
+}
+
+function openSkillRunCard(skillId, description) {
+  selectedSkillId = skillId;
+  skillRunTitle.textContent = skillId;
+  skillRunDescription.textContent = description;
+  skillRunParams.value = '';
+  skillRunResult.textContent = '';
+  skillRunCard.style.display = 'block';
+}
+
+// --- Module cards on Home: jump to Skills view and auto-open a skill ---
+
+const moduleCards = document.querySelectorAll('.module-card');
+
+moduleCards.forEach(card => {
+  card.addEventListener('click', async () => {
+    showView('skills');
+    const targetSkill = card.dataset.skill;
+
+    if (!targetSkill) return;
+
+    if (skillsListEl.textContent === 'Loading…' || skillsListEl.children.length === 0) {
+      await loadSkillsList();
+    }
+
+    const knownSkillIds = Array.from(skillsListEl.querySelectorAll('.skill-run-item strong'))
+      .map(el => el.textContent);
+
+    if (knownSkillIds.includes(targetSkill)) {
+      const row = Array.from(skillsListEl.querySelectorAll('.skill-run-item'))
+        .find(r => r.querySelector('strong').textContent === targetSkill);
+      if (row) row.click();
+    }
+  });
+});
+
+skillRunCancel.addEventListener('click', () => {
+  skillRunCard.style.display = 'none';
+  selectedSkillId = null;
+});
+
+skillRunButton.addEventListener('click', async () => {
+  if (!selectedSkillId) return;
+
+  let params = {};
+  const raw = skillRunParams.value.trim();
+  if (raw) {
+    try {
+      params = JSON.parse(raw);
+    } catch (err) {
+      skillRunResult.textContent = 'Invalid JSON in parameters.';
+      return;
+    }
+  }
+
+  skillRunResult.textContent = 'Running…';
+
+  try {
+    const response = await fetch('/api/skills/' + encodeURIComponent(selectedSkillId), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    const data = await response.json();
+    skillRunResult.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    skillRunResult.textContent = 'Request failed: ' + err.message;
+  }
+});
