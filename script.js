@@ -155,15 +155,17 @@ async function refreshDashboard() {
 refreshDashboard();
 setInterval(refreshDashboard, 5000);
 
-// --- Rail navigation: switch between Home and Skills views ---
+// --- Rail navigation: switch between Home, Chat, and Skills views ---
 
 const railItems = document.querySelectorAll('.rail-item');
 const viewHome = document.getElementById('viewHome');
+const viewChat = document.getElementById('viewChat');
 const viewSkills = document.getElementById('viewSkills');
 
 function showView(viewName) {
   railItems.forEach(item => item.classList.toggle('active', item.dataset.view === viewName));
   viewHome.classList.toggle('hidden-view', viewName !== 'home');
+  viewChat.classList.toggle('hidden-view', viewName !== 'chat');
   viewSkills.classList.toggle('hidden-view', viewName !== 'skills');
 
   if (viewName === 'skills') {
@@ -173,6 +175,78 @@ function showView(viewName) {
 
 railItems.forEach(item => {
   item.addEventListener('click', () => showView(item.dataset.view));
+});
+
+// --- Shared skill catalog cache + keyword matcher ---
+// Used by both the top search bar and the Chat view. This is literal
+// keyword overlap scoring against real skill_ids/descriptions from
+// /api/skills — not natural-language understanding. If nothing scores
+// above zero, both features say so plainly rather than guessing.
+
+let cachedSkillCatalog = null;
+
+async function getSkillCatalog() {
+  if (cachedSkillCatalog) return cachedSkillCatalog;
+  const response = await fetch('/api/skills');
+  if (!response.ok) throw new Error('Skills request failed: ' + response.status);
+  cachedSkillCatalog = await response.json();
+  return cachedSkillCatalog;
+}
+
+function findBestMatchingSkill(query, catalog) {
+  const queryWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+  if (queryWords.length === 0) return null;
+
+  let bestId = null;
+  let bestScore = 0;
+
+  for (const [skillId, description] of Object.entries(catalog)) {
+    const haystack = (skillId + ' ' + description).toLowerCase().replace(/[._]/g, ' ');
+    let score = 0;
+    for (const word of queryWords) {
+      if (haystack.includes(word)) score += 1;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestId = skillId;
+    }
+  }
+
+  return bestScore > 0 ? bestId : null;
+}
+
+// --- Top search bar: find a matching skill and open its run panel ---
+
+const searchInput = document.getElementById('searchInput');
+const searchResultHint = document.getElementById('searchResultHint');
+
+searchInput.addEventListener('keydown', async (e) => {
+  if (e.key !== 'Enter') return;
+  const query = searchInput.value.trim();
+  if (!query) return;
+
+  searchResultHint.textContent = 'Searching…';
+
+  try {
+    const catalog = await getSkillCatalog();
+    const matchedId = findBestMatchingSkill(query, catalog);
+
+    if (!matchedId) {
+      searchResultHint.textContent =
+        `No matching skill found for "${query}". Try the Skills tab to browse everything available.`;
+      return;
+    }
+
+    searchResultHint.textContent = `Opening ${matchedId}…`;
+    showView('skills');
+    await loadSkillsList();
+    const row = Array.from(skillsListEl.querySelectorAll('.skill-run-item'))
+      .find(r => r.querySelector('strong').textContent === matchedId);
+    if (row) row.click();
+    searchResultHint.textContent = '';
+  } catch (err) {
+    searchResultHint.textContent = 'Could not reach /api/skills.';
+  }
 });
 
 // --- Skills panel: fetch GET /api/skills, run one via POST /api/skills/<id> ---
@@ -191,9 +265,7 @@ let selectedSkillId = null;
 async function loadSkillsList() {
   skillsListEl.textContent = 'Loading…';
   try {
-    const response = await fetch('/api/skills');
-    if (!response.ok) throw new Error('Skills request failed: ' + response.status);
-    const skills = await response.json();
+    const skills = await getSkillCatalog();
 
     skillsListEl.innerHTML = '';
     const skillIds = Object.keys(skills).sort();
@@ -255,6 +327,15 @@ skillRunCancel.addEventListener('click', () => {
   selectedSkillId = null;
 });
 
+async function runSelectedSkill(skillId, params) {
+  const response = await fetch('/api/skills/' + encodeURIComponent(skillId), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+  return response.json();
+}
+
 skillRunButton.addEventListener('click', async () => {
   if (!selectedSkillId) return;
 
@@ -272,14 +353,89 @@ skillRunButton.addEventListener('click', async () => {
   skillRunResult.textContent = 'Running…';
 
   try {
-    const response = await fetch('/api/skills/' + encodeURIComponent(selectedSkillId), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    });
-    const data = await response.json();
+    const data = await runSelectedSkill(selectedSkillId, params);
     skillRunResult.textContent = JSON.stringify(data, null, 2);
   } catch (err) {
     skillRunResult.textContent = 'Request failed: ' + err.message;
   }
+});
+
+// --- Chat view: keyword-match each message to a skill, run it, show result ---
+// Honest about what this is: literal keyword matching, same as the
+// search bar, not open-ended natural-language conversation. If a
+// matched skill needs a parameter (e.g. "topic"), NEXA guesses the
+// single most skill-relevant word from the message; if the skill
+// rejects it, that rejection is shown plainly rather than retried
+// silently.
+
+const chatLog = document.getElementById('chatLog');
+const chatInput = document.getElementById('chatInput');
+const chatSendButton = document.getElementById('chatSendButton');
+
+function appendChatMessage(role, text) {
+  const bubble = document.createElement('div');
+  bubble.className = 'chat-bubble chat-' + role;
+  bubble.textContent = text;
+  chatLog.appendChild(bubble);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+function guessParamsForSkill(skillId, catalog, rawMessage) {
+  // Most builtin advisor skills take a single "topic" string param.
+  // resource.check_balance and knowledge.* need structured params this
+  // simple heuristic can't guess — those are left to the Skills tab.
+  if (skillId.endsWith('.reference_advisor') || skillId.endsWith('_advisor')) {
+    return { topic: rawMessage };
+  }
+  return null;
+}
+
+async function handleChatSend() {
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  appendChatMessage('user', message);
+  chatInput.value = '';
+
+  try {
+    const catalog = await getSkillCatalog();
+    const matchedId = findBestMatchingSkill(message, catalog);
+
+    if (!matchedId) {
+      appendChatMessage('nexa',
+        'I don\u2019t have a skill matching that yet. Try the Skills tab to see everything I can do.');
+      return;
+    }
+
+    const params = guessParamsForSkill(matchedId, catalog, message);
+    if (params === null) {
+      appendChatMessage('nexa',
+        `That sounds closest to ${matchedId}, but it needs specific parameters I can't guess from plain text. Open it from the Skills tab instead.`);
+      return;
+    }
+
+    const data = await runSelectedSkill(matchedId, params);
+
+    if (data.status !== 'executed') {
+      appendChatMessage('nexa', `${matchedId} responded: ${data.status} — ${data.message || ''}`);
+      return;
+    }
+
+    const result = data.result || {};
+    if (result.status === 'found' && result.guidance) {
+      appendChatMessage('nexa', result.guidance.summary || JSON.stringify(result.guidance));
+    } else if (result.status === 'not_found') {
+      appendChatMessage('nexa',
+        `${matchedId} didn't recognize that specific topic. Available topics: ${(result.available_topics || []).join(', ')}`);
+    } else {
+      appendChatMessage('nexa', JSON.stringify(result, null, 2));
+    }
+  } catch (err) {
+    appendChatMessage('nexa', 'Something went wrong reaching the backend: ' + err.message);
+  }
+}
+
+chatSendButton.addEventListener('click', handleChatSend);
+chatInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') handleChatSend();
 });

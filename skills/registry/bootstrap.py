@@ -20,6 +20,7 @@ import skills.builtin.resource_check_balance as resource_check_balance
 import skills.builtin.agriculture_advisor as agriculture_advisor
 import skills.builtin.construction_advisor as construction_advisor
 import skills.builtin.electrical_advisor as electrical_advisor
+import skills.builtin.plumbing_advisor as plumbing_advisor
 import skills.builtin.solar_advisor as solar_advisor
 import skills.builtin.water_systems_advisor as water_systems_advisor
 import skills.builtin.livestock_advisor as livestock_advisor
@@ -28,6 +29,7 @@ import skills.builtin.workforce_advisor as workforce_advisor
 import skills.builtin.entrepreneurship_advisor as entrepreneurship_advisor
 import skills.builtin.financial_literacy_advisor as financial_literacy_advisor
 import skills.builtin.tenancy_rights_advisor as tenancy_rights_advisor
+import skills.builtin.digital_safety_advisor as digital_safety_advisor
 import skills.privileged.system_shutdown as system_shutdown
 import skills.privileged.ai_reasoning as ai_reasoning
 import skills.privileged.image_generation as image_generation
@@ -44,6 +46,7 @@ def _bootstrap() -> None:
     agriculture_advisor.register_builtin_skills(global_skill_registry)
     construction_advisor.register_builtin_skills(global_skill_registry)
     electrical_advisor.register_builtin_skills(global_skill_registry)
+    plumbing_advisor.register_builtin_skills(global_skill_registry)
     solar_advisor.register_builtin_skills(global_skill_registry)
     water_systems_advisor.register_builtin_skills(global_skill_registry)
     livestock_advisor.register_builtin_skills(global_skill_registry)
@@ -52,6 +55,7 @@ def _bootstrap() -> None:
     entrepreneurship_advisor.register_builtin_skills(global_skill_registry)
     financial_literacy_advisor.register_builtin_skills(global_skill_registry)
     tenancy_rights_advisor.register_builtin_skills(global_skill_registry)
+    digital_safety_advisor.register_builtin_skills(global_skill_registry)
     system_shutdown.register_privileged_skills(global_skill_registry)
     ai_reasoning.register_privileged_skills(global_skill_registry)
     image_generation.register_privileged_skills(global_skill_registry)

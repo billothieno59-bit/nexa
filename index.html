@@ -53,7 +53,7 @@
         <span class="rail-icon">&#8962;</span>
         <span class="rail-label">Home</span>
       </div>
-      <div class="rail-item" data-view="home" title="Chat">
+      <div class="rail-item" data-view="chat" title="Chat">
         <span class="rail-icon">&#128172;</span>
         <span class="rail-label">Chat</span>
       </div>
@@ -81,10 +81,11 @@
       <div class="search-row">
         <div class="search-bar">
           <span class="search-icon">&#128269;</span>
-          <span class="search-placeholder">Ask NEXA anything…</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Ask NEXA anything…" autocomplete="off">
         </div>
         <div class="time-chip" id="clock">09:42</div>
       </div>
+      <div id="searchResultHint" class="search-result-hint"></div>
 
       <div id="viewHome">
 
@@ -165,6 +166,21 @@
           <div class="status-footer" id="statusFooter">Connecting to /api/dashboard…</div>
         </div>
 
+      </div>
+
+      <div id="viewChat" class="hidden-view">
+        <div class="glass-card wood-accent chat-card">
+          <h2 class="pipeline-title">Chat</h2>
+          <p class="hero-sub" style="margin-bottom:16px;">
+            NEXA matches what you type against its real skill catalog by keyword —
+            this is not open-ended conversation yet, just a direct line to a matching skill.
+          </p>
+          <div id="chatLog" class="chat-log"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type a question…" autocomplete="off">
+            <div class="glass-card-hover" id="chatSendButton" style="cursor:pointer;">Send</div>
+          </div>
+        </div>
       </div>
 
       <div id="viewSkills" class="hidden-view">
