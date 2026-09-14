@@ -36,7 +36,10 @@ _SAFETY_TOPICS: Dict[str, Dict[str, Any]] = {
             "Legitimate providers rarely ask for your password or a one-time "
             "code through a message you did not request."
         ),
-        "notes": "When unsure, go directly to the provider's official app or website instead of clicking a link in a message.",
+        "notes": (
+            "When unsure, go directly to the provider's official app or "
+            "website instead of clicking a link in a message."
+        ),
     },
     "strong_passwords": {
         "common_names": ["passwords", "strong password", "password safety"],
@@ -46,7 +49,10 @@ _SAFETY_TOPICS: Dict[str, Dict[str, Any]] = {
             "across multiple accounts — reuse means one leak exposes "
             "everything."
         ),
-        "notes": "A password manager can generate and store unique passwords per account so you don't have to memorize them all.",
+        "notes": (
+            "A password manager can generate and store unique passwords "
+            "per account so you don't have to memorize them all."
+        ),
     },
     "account_recovery": {
         "common_names": ["account recovery", "locked out", "recovery options"],
@@ -55,7 +61,10 @@ _SAFETY_TOPICS: Dict[str, Dict[str, Any]] = {
             "recovery codes) before you need them is what makes regaining "
             "access possible if you're ever locked out."
         ),
-        "notes": "Recovery codes are commonly meant to be saved somewhere offline, not just left in an easily-searched inbox.",
+        "notes": (
+            "Recovery codes are commonly meant to be saved somewhere "
+            "offline, not just left in an easily-searched inbox."
+        ),
     },
     "public_wifi_safety": {
         "common_names": ["public wifi", "wifi safety", "open network"],
