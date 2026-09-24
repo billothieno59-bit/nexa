@@ -23,8 +23,14 @@ HEALTH_ADVISOR_SKILL = SkillManifest(
 _HEALTH_GUIDANCE: Dict[str, Dict[str, Any]] = {
     "fever": {
         "common_names": ["fever", "high temperature"],
-        "summary": "Fever is often a sign that the body is fighting an infection or inflammation, but it can also be caused by other factors.",
-        "tip": "Rest, hydrate, and monitor temperature and symptoms closely; get professional care if the fever is severe or persistent.",
+        "summary": (
+            "Fever is often a sign that the body is fighting an infection "
+            "or inflammation, but it can also be caused by other factors."
+        ),
+        "tip": (
+            "Rest, hydrate, and monitor temperature and symptoms closely; "
+            "get professional care if the fever is severe or persistent."
+        ),
     },
     "hydration": {
         "common_names": ["hydration", "dehydration", "water intake"],
@@ -33,12 +39,21 @@ _HEALTH_GUIDANCE: Dict[str, Dict[str, Any]] = {
     },
     "first_aid": {
         "common_names": ["first aid", "minor injury", "cuts", "wounds"],
-        "summary": "Basic first aid can reduce complications from minor cuts, scrapes, and burns by cleaning the area and protecting it.",
-        "tip": "Wash hands before dressing a wound, clean gently, and seek proper medical attention for serious or deep injuries.",
+        "summary": (
+            "Basic first aid can reduce complications from minor cuts, "
+            "scrapes, and burns by cleaning the area and protecting it."
+        ),
+        "tip": (
+            "Wash hands before dressing a wound, clean gently, and seek "
+            "proper medical attention for serious or deep injuries."
+        ),
     },
 }
 
-_DISCLAIMER = "This is general health information and is not a substitute for a licensed clinical professional or local emergency guidance."
+_DISCLAIMER = (
+    "This is general health information and is not a substitute for a "
+    "licensed clinical professional or local emergency guidance."
+)
 
 
 def _health_advisor_handler(topic: str) -> Dict[str, Any]:

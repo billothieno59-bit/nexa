@@ -24,12 +24,18 @@ CLIMATE_ADVISOR_SKILL = SkillManifest(
 _CLIMATE_GUIDANCE: Dict[str, Dict[str, Any]] = {
     "drought": {
         "common_names": ["drought", "water stress", "dry spell"],
-        "summary": "Drought reduces soil moisture and crop performance, so water conservation and soil cover become more important.",
+        "summary": (
+            "Drought reduces soil moisture and crop performance, so water "
+            "conservation and soil cover become more important."
+        ),
         "tip": "Mulch the soil, reduce unnecessary irrigation, and store water where practical.",
     },
     "flooding": {
         "common_names": ["flooding", "heavy rain", "storm surge"],
-        "summary": "Heavy rainfall can overwhelm drainage and damage crops, roads, and structures if water is not diverted early.",
+        "summary": (
+            "Heavy rainfall can overwhelm drainage and damage crops, roads, "
+            "and structures if water is not diverted early."
+        ),
         "tip": "Check drainage routes, protect low-lying areas, and move critical equipment to higher ground.",
     },
     "heat": {
@@ -39,7 +45,10 @@ _CLIMATE_GUIDANCE: Dict[str, Dict[str, Any]] = {
     },
 }
 
-_DISCLAIMER = "This is general climate awareness and adaptation guidance, not local metrological forecasting or site-specific engineering advice."
+_DISCLAIMER = (
+    "This is general climate awareness and adaptation guidance, not local "
+    "meteorological forecasting or site-specific engineering advice."
+)
 
 
 def _climate_advisor_handler(topic: str) -> Dict[str, Any]:

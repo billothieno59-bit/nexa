@@ -23,22 +23,37 @@ TRAVEL_ADVISOR_SKILL = SkillManifest(
 _TRAVEL_GUIDANCE: Dict[str, Dict[str, Any]] = {
     "rain": {
         "common_names": ["rain", "rainy season", "wet season"],
-        "summary": "Rain can affect roads, visibility, and travel times, so route planning should include extra delays and drainage checks.",
+        "summary": (
+            "Rain can affect roads, visibility, and travel times, so route "
+            "planning should include extra delays and drainage checks."
+        ),
         "tip": "Allow extra time, inspect roads before departure, and avoid flooded areas or low crossings.",
     },
     "heat": {
         "common_names": ["heat", "hot weather", "sun exposure"],
-        "summary": "Traveling in intense heat can increase fatigue and dehydration, especially for long distances or outdoor work.",
+        "summary": (
+            "Traveling in intense heat can increase fatigue and dehydration, "
+            "especially for long distances or outdoor work."
+        ),
         "tip": "Carry water, rest in shaded areas, and avoid direct sun during the hottest periods of the day.",
     },
     "route_planning": {
         "common_names": ["route planning", "travel plan", "itinerary"],
-        "summary": "Good route planning balances distance, road conditions, fuel availability, and backup options in case of delays.",
-        "tip": "Have a primary and alternate route, keep emergency contacts ready, and confirm fuel or charging availability ahead of time.",
+        "summary": (
+            "Good route planning balances distance, road conditions, fuel "
+            "availability, and backup options in case of delays."
+        ),
+        "tip": (
+            "Have a primary and alternate route, keep emergency contacts "
+            "ready, and confirm fuel or charging availability ahead of time."
+        ),
     },
 }
 
-_DISCLAIMER = "This is general route and travel guidance, not official transport, weather, or logistics advice for a particular route or authority."
+_DISCLAIMER = (
+    "This is general route and travel guidance, not official transport, "
+    "weather, or logistics advice for a particular route or authority."
+)
 
 
 def _travel_advisor_handler(topic: str) -> Dict[str, Any]:
