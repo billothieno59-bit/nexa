@@ -20,10 +20,10 @@ Description: Minimal, deliberately narrow HTTP server.
                frontend files (project root index.html, style.css,
                script.js).
              - GET /assets/<filename> — serves image files from
-               web/assets/ only (login/hero background photography).
+               assets/backgrounds/ only (login/hero background photography).
                Uses Flask's send_from_directory, which resolves the
                requested path and rejects anything that escapes
-               web/assets/ — a filename like "../../CONSTITUTION.md"
+               assets/backgrounds/ — a filename like "../../CONSTITUTION.md"
                404s rather than serving a file outside that one
                folder. Not a general static mount.
 
@@ -44,7 +44,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from flask import Flask, jsonify, request, send_file, send_from_directory
+from flask import Flask, abort, jsonify, request, send_file, send_from_directory
 
 from core.applications.api.web_skill_gateway import (
     list_web_reachable_skills,
@@ -54,6 +54,7 @@ from core.interface.api.dashboard import dashboard_status
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 WEB_ASSETS_DIR = PROJECT_ROOT / "web" / "assets"
+LEGACY_ASSETS_DIR = PROJECT_ROOT / "assets" / "backgrounds"
 
 
 def _http_status_for(result_status: str) -> int:
@@ -108,9 +109,20 @@ def create_app() -> Flask:
     def script():
         return send_file(PROJECT_ROOT / "script.js")
 
-    @app.get("/assets/<filename>")
+    @app.get("/assets/<path:filename>")
     def web_asset(filename: str):
-        return send_from_directory(WEB_ASSETS_DIR, filename)
+        requested_path = Path(filename)
+        if requested_path.is_absolute() or ".." in requested_path.parts:
+            abort(404)
+
+        safe_name = requested_path.name
+        asset_dir = LEGACY_ASSETS_DIR if requested_path.parts[:-1] == ("backgrounds",) else WEB_ASSETS_DIR
+
+        candidate = asset_dir / safe_name
+        if candidate.exists() and candidate.is_file():
+            return send_from_directory(asset_dir, safe_name)
+
+        abort(404)
 
     return app
 

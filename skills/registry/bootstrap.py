@@ -21,6 +21,8 @@ import skills.builtin.agriculture_advisor as agriculture_advisor
 import skills.builtin.construction_advisor as construction_advisor
 import skills.builtin.electrical_advisor as electrical_advisor
 import skills.builtin.plumbing_advisor as plumbing_advisor
+import skills.builtin.welding_advisor as welding_advisor
+import skills.builtin.mechanics_advisor as mechanics_advisor
 import skills.builtin.solar_advisor as solar_advisor
 import skills.builtin.water_systems_advisor as water_systems_advisor
 import skills.builtin.livestock_advisor as livestock_advisor
@@ -30,6 +32,10 @@ import skills.builtin.entrepreneurship_advisor as entrepreneurship_advisor
 import skills.builtin.financial_literacy_advisor as financial_literacy_advisor
 import skills.builtin.tenancy_rights_advisor as tenancy_rights_advisor
 import skills.builtin.digital_safety_advisor as digital_safety_advisor
+import skills.builtin.climate_advisor as climate_advisor
+import skills.builtin.health_advisor as health_advisor
+import skills.builtin.travel_advisor as travel_advisor
+import skills.builtin.civic_services_advisor as civic_services_advisor
 import skills.privileged.system_shutdown as system_shutdown
 import skills.privileged.ai_reasoning as ai_reasoning
 import skills.privileged.image_generation as image_generation
@@ -47,6 +53,8 @@ def _bootstrap() -> None:
     construction_advisor.register_builtin_skills(global_skill_registry)
     electrical_advisor.register_builtin_skills(global_skill_registry)
     plumbing_advisor.register_builtin_skills(global_skill_registry)
+    welding_advisor.register_builtin_skills(global_skill_registry)
+    mechanics_advisor.register_builtin_skills(global_skill_registry)
     solar_advisor.register_builtin_skills(global_skill_registry)
     water_systems_advisor.register_builtin_skills(global_skill_registry)
     livestock_advisor.register_builtin_skills(global_skill_registry)
@@ -56,6 +64,10 @@ def _bootstrap() -> None:
     financial_literacy_advisor.register_builtin_skills(global_skill_registry)
     tenancy_rights_advisor.register_builtin_skills(global_skill_registry)
     digital_safety_advisor.register_builtin_skills(global_skill_registry)
+    climate_advisor.register_builtin_skills(global_skill_registry)
+    health_advisor.register_builtin_skills(global_skill_registry)
+    travel_advisor.register_builtin_skills(global_skill_registry)
+    civic_services_advisor.register_builtin_skills(global_skill_registry)
     system_shutdown.register_privileged_skills(global_skill_registry)
     ai_reasoning.register_privileged_skills(global_skill_registry)
     image_generation.register_privileged_skills(global_skill_registry)

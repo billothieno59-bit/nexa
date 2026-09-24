@@ -1,66 +1,172 @@
-﻿# NEXA African Operating System Constitution
+﻿# NEXA CONSTITUTION v2.0
 
-## Status
+## One Intelligence. Built for Africa.
 
-Ratified — Foundational Build
+### Preamble
+NEXA is Africa's Intelligence Operating System. Its interface shall reflect the beauty, diversity, and innovation of the African continent through a minimalist, premium, and human-centered design language. Intelligence is the engine. Africa is the interface.
 
-## Purpose
+---
 
-NEXA African Operating System is a modular operating-system architecture designed to provide a unified foundation for perception, communication, semantics, knowledge, identity, cognition, orchestration, execution, trust, and human interaction.
+## Article I — Design Identity
+The official visual identity of NEXA shall be:
 
-## Architectural Principles
+- Style: Minimalist Glassmorphism
+- Theme: Luxury African Operating System
+- Primary Accent: Emerald Intelligence (#00D4A6)
+- Background Philosophy: Cinematic African landscapes
+- Core Symbol: The Living Emerald Intelligence Orb
 
-1. The architecture is modular and canonical.
-2. Each universal layer has one authoritative location.
-3. Duplicate subsystem roots are prohibited.
-4. Contracts are defined before implementation.
-5. Human languages are communication representations, not the foundation of cognition.
-6. Semantic meaning is language-independent.
-7. JARVIS is the canonical interface runtime.
-8. The user may choose the name of their personal assistant.
-9. Language, dialect, and code-switching are handled through the communication architecture.
-10. Core reasoning remains independent of any single language or interface.
-11. Trust, identity, permissions, and authority are explicit architectural concerns.
-12. NEXA components must remain replaceable without violating constitutional contracts.
+No interface element shall overpower the intelligence orb or the surrounding African landscape.
 
-## Canonical Universal Layers
+---
 
-| Universal | Canonical Path |
+## Article II — The Living Interface
+NEXA shall never use static generic backgrounds.
+
+The operating system shall rotate authentic African imagery including:
+
+- African Cities
+- Ancient African Architecture
+- African Arts
+- Matatu Culture
+- African Landscapes
+- African City Cultures
+
+Background transitions shall be smooth, slow, and unobtrusive.
+
+---
+
+## Article III — Minimalism
+The interface shall follow five immutable principles:
+
+1. One primary focal point per screen.
+2. Maximum whitespace.
+3. Glass surfaces only where interaction exists.
+4. Emerald is the only active accent color.
+5. Photography replaces decorative graphics.
+
+Clutter is unconstitutional.
+
+---
+
+## Article IV — Login Experience
+The login screen shall contain only:
+
+- NEXA logo
+- Living emerald orb
+- Welcome message
+- Username field
+- Password field
+- Login button
+- Optional provider sign-in
+- African location indicator
+
+The login card shall float above a cinematic African destination.
+
+---
+
+## Article V — Dashboard
+The dashboard shall be centered around the Intelligence Orb.
+
+The hero statement is permanently defined as:
+
+**ONE INTELLIGENCE.**
+
+*The essential gateway to many possibilities.*
+
+Four intelligence cards shall remain beneath the hero:
+
+- Agriculture
+- Education
+- Innovation
+- Africa
+
+These cards represent missions, not advertisements.
+
+---
+
+## Article VI — Navigation
+The navigation hierarchy shall remain:
+
+- Dashboard
+- Modules
+- Knowledge
+- History
+
+A vertical sidebar shall contain:
+
+- Home
+- Chat
+- Skills
+- Knowledge
+- History
+- Notifications
+- Settings
+
+Navigation must remain minimalist and icon-driven.
+
+---
+
+## Article VII — Motion
+Motion exists to communicate intelligence.
+
+Allowed animations:
+
+- Orb breathing
+- Orb thinking rotation
+- Listening pulse
+- Background crossfade
+- Glass hover elevation
+
+Excessive animation is prohibited.
+
+---
+
+## Article VIII — African Knowledge
+Knowledge pages shall visually celebrate African civilization through imagery inspired by:
+
+- Great Zimbabwe
+- Lalibela
+- Timbuktu
+- Djenné
+- Stone Town
+- Mount Kenya
+- Rift Valley
+- Nairobi Innovation
+
+Knowledge is cultural as well as computational.
+
+---
+
+## Article IX — Accessibility
+Every visual decision must preserve:
+
+- High text contrast
+- Keyboard navigation
+- Screen-reader compatibility
+- Reduced-motion support
+- Responsive layouts from mobile to desktop
+
+Beauty shall never reduce usability.
+
+---
+
+## Article X — Constitutional Colors
+
+| Role | Value |
 |---|---|
-| UCL | core/interaction/communication/ |
-| UAL | core/interaction/accessibility/ |
-| UPL | core/perception/ |
-| USL | core/semantic/ |
-| UKL | core/knowledge/ |
-| UIL | core/identity/ |
-| UOL | core/execution/orchestrator/ |
-| UML | core/execution/uml/ |
-| UTL | core/governance/trust/ |
+| Emerald Intelligence | #00D4A6 |
+| Midnight Ocean | #071826 |
+| Ivory Sand | #F5F1E8 |
+| Sky Cyan | #27C6F5 |
+| Savannah Gold | #D4A574 |
 
-## Cognition
+These colors constitute the official NEXA palette.
 
-Cognition is a core subsystem responsible for reasoning, planning, memory, learning, and decision processes.
+---
 
-Canonical location:
+## Final Principle
 
-core/cognition/
+> **Africa is the Interface. Intelligence is the Engine.**
 
-## JARVIS Interface
-
-JARVIS is the canonical NEXA interface runtime.
-
-Canonical location:
-
-core/interface/jarvis/
-
-JARVIS is responsible for human-facing interaction and presentation. It must not become the location of semantic reasoning, knowledge, orchestration, or execution logic.
-
-The user-facing assistant name is configurable and must not be hard-coded to "JARVIS".
-
-## Ownership
-
-NEXA architectural ownership is represented through its constitutional documentation, canonical module definitions, contracts, implementation metadata, and repository history.
-
-## Build Rule
-
-No major subsystem is implemented before its architectural responsibility and contract are defined.
+This constitution governs every future NEXA web, desktop, mobile, and immersive interface.
